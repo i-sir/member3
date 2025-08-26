@@ -171,6 +171,137 @@ class MemberController extends AuthController
      *
      *
      *
+     *     @OA\Parameter(
+     *         name="username",
+     *         in="query",
+     *         description="姓名",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="birth",
+     *         in="query",
+     *         description="出生日期",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="region",
+     *         in="query",
+     *         description="所属地区",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="address",
+     *         in="query",
+     *         description="通讯地址",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="email",
+     *         in="query",
+     *         description="邮箱",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="school",
+     *         in="query",
+     *         description="就读学校",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="occupation",
+     *         in="query",
+     *         description="职位",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="associations",
+     *         in="query",
+     *         description="校社团",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="associations_occupation",
+     *         in="query",
+     *         description="校社团职位",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="urgent_username",
+     *         in="query",
+     *         description="紧急联系人姓名",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="urgent_phone",
+     *         in="query",
+     *         description="紧急联系人电话",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="relationship",
+     *         in="query",
+     *         description="与我关系",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *
      *     @OA\Response(response="200", description="An example resource"),
      *     @OA\Response(response="default", description="An example resource")
      * )

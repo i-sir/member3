@@ -8,6 +8,7 @@
 
 namespace api\wxapp\controller;
 
+use initmodel\AssetModel;
 use plugins\weipay\lib\PayController;
 use think\facade\Db;
 use think\facade\Log;
@@ -250,8 +251,6 @@ class NotifyController extends AuthController
     }
 
 
-
-
     /**
      *
      * 微信支付回调 测试
@@ -313,8 +312,9 @@ class NotifyController extends AuthController
      */
     public function processOrder($pay_num)
     {
-        $OrderPayModel  = new \initmodel\OrderPayModel();//支付记录表
-        $ShopOrderModel = new \initmodel\ShopOrderModel(); //订单管理  (ps:InitModel)
+        $OrderPayModel       = new \initmodel\OrderPayModel();//支付记录表
+        $ShopOrderModel      = new \initmodel\ShopOrderModel(); //订单管理  (ps:InitModel)
+        $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
 
 
         /** 查询出支付信息,以及关联的订单号 */
@@ -343,6 +343,33 @@ class NotifyController extends AuthController
                 return false;//订单状态异常
             }
             $result = $ShopOrderModel->where($map)->strict(false)->update($update);//更新订单信息
+        }
+
+
+        //开通会员 & 类型注意
+        if ($pay_info['order_type'] == 250) {
+            $order_info = $ShopOrderModel->where($map)->find();//查询订单信息
+            if ($order_info['status'] != 1) {
+                Log::write("订单状态异常[processOrder],订单号[{$order_num}]");
+                return false;//订单状态异常
+            }
+            $result = $ShopOrderModel->where($map)->strict(false)->update($update);//更新订单信息
+
+
+            //扣除积分
+            $remark = "操作人[开通会员使用积分抵扣];操作说明[开通会员使用积分抵扣];操作类型[开通会员使用积分抵扣];";//管理备注
+            AssetModel::decAsset('下单得积分,给上级发放佣金 [250]', [
+                'operate_type'  => 'point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_info['point'],
+                'order_num'     => $order_num,
+                'order_type'    => 250,
+                'content'       => '开通会员抵扣',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+
         }
 
 

@@ -1,0 +1,210 @@
+
+
+
+
+    <!--用户id-->    <div class="form-group">
+        <label class="col-sm-2 control-label">用户信息:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="user_id" class="form-control post-params item-left" value="{$user_id|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--状态:1待付款,2已付款-->    <div class="form-group">
+        <label class="col-sm-2 control-label">状态:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="status" class="form-control post-params item-left" value="{$status|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--订单号-->    <div class="form-group">
+        <label class="col-sm-2 control-label">订单号:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="order_num" class="form-control post-params item-left" value="{$order_num|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--身份标识 openid-->    <div class="form-group">
+        <label class="col-sm-2 control-label">身份标识 openid:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="openid" class="form-control post-params item-left" value="{$openid|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--wx_openid-->    <div class="form-group">
+        <label class="col-sm-2 control-label">wx_openid:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="wx_openid" class="form-control post-params item-left" value="{$wx_openid|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--用户电话-->    <div class="form-group">
+        <label class="col-sm-2 control-label">用户电话:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="user_phone" class="form-control post-params item-left" value="{$user_phone|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--积分抵扣-->    <div class="form-group">
+        <label class="col-sm-2 control-label">积分抵扣:</label>
+        <div class="layui-input-block col-sm-6">
+                                <input type="number" class="form-control post-params item-left" name="point" value="{$point|default=''}">
+                        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--实际支付金额-->    <div class="form-group">
+        <label class="col-sm-2 control-label">实际支付金额:</label>
+        <div class="layui-input-block col-sm-6">
+                                <input type="number" class="form-control post-params item-left" name="amount" value="{$amount|default=''}">
+                        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--会员卡名称-->    <div class="form-group">
+        <label class="col-sm-2 control-label">会员卡名称:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="vip_name" class="form-control post-params item-left" value="{$vip_name|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--vip_id-->    <div class="form-group">
+        <label class="col-sm-2 control-label">vip_id:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="vip_id" class="form-control post-params item-left" value="{$vip_id|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--到期时间-->    <div class="form-group">
+        <label class="col-sm-2 control-label">到期时间:</label>
+        <div class="layui-input-block col-sm-6">
+                                                    <input class="form-control post-params item-left js-datetime" name="vip_end_time" required
+                           type="text"
+                           value="{:isset($vip_end_time) && $vip_end_time > 10000 ? date('Y-m-d H:i', $vip_end_time) : ''}">
+         </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--支付时间-->    <div class="form-group">
+        <label class="col-sm-2 control-label">支付时间:</label>
+        <div class="layui-input-block col-sm-6">
+                                                    <input class="form-control post-params item-left js-datetime" name="pay_time" required
+                           type="text"
+                           value="{:isset($pay_time) && $pay_time > 10000 ? date('Y-m-d H:i', $pay_time) : ''}">
+         </div>
+    </div>
+
+
+
+
+
+
+
+
+

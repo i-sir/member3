@@ -543,7 +543,7 @@ class PublicController extends AuthController
             //向数据库插入新用户信息
             $insert['nickname']    = $this->get_member_wx_nickname();
             $insert['avatar']      = cmf_get_asset_url(cmf_config('app_logo'));
-            $insert['openid']      = $user_openid;
+            $insert['openid']      = 'M_' . md5(uniqid() . $user_openid);
             $insert['mini_openid'] = $user_openid;
             $insert['invite_code'] = $this->get_num_only('invite_code', 5, 4, '', 'member');
             $insert['phone']       = $user_phone;
@@ -557,6 +557,7 @@ class PublicController extends AuthController
             $MemberModel->strict(false)->insert($insert);
         } else {
             //数据库已存在用户,更新用户登录信息
+            $update['openid']      = 'M_' . md5(uniqid() . $user_openid);
             $update['phone']       = $user_phone;
             $update['unionid']     = $user_unionid;
             $update['mini_openid'] = $user_openid;
