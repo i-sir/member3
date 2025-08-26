@@ -16,6 +16,39 @@ class TaskInit
 
 
     /**
+     * 更新项目状态
+     */
+    public function operation_project()
+    {
+        $ProjectModel = new \initmodel\ProjectModel(); //项目预定   (ps:InitModel)
+
+
+        //进行中
+        $map   = [];
+        $map[] = ['begin_time', '<', time()];
+        $map[] = ['end_time', '>', time()];
+        $map[] = ['status', '=', 2];
+        $ProjectModel->where($map)->strict(false)->update([
+            'status'      => 1,
+            'update_time' => time(),
+        ]);
+
+
+        //已结束
+        $map100   = [];
+        $map100[] = ['end_time', '<', time()];
+        $map100[] = ['status', '=', 1];
+        $ProjectModel->where($map100)->strict(false)->update([
+            'status'      => 2,
+            'update_time' => time(),
+        ]);
+
+
+        echo("更新项目状态,执行成功\n" . cmf_random_string(80) . "\n" . date('Y-m-d H:i:s') . "\n");
+    }
+
+
+    /**
      * 自动取消订单
      */
     public function operation_cancel_order()
