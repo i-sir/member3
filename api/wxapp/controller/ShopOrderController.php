@@ -207,7 +207,7 @@ class ShopOrderController extends AuthController
         $params = $this->request->param();
 
         /** 查询条件 **/
-        $where = [];
+        $where   = [];
         $where[] = ['user_id', '=', $this->user_id];
         if ($params['id']) $where[] = ["id", "=", $params["id"]];
         if ($params['order_num']) $where[] = ["order_num", "=", $params["order_num"]];
@@ -944,7 +944,7 @@ class ShopOrderController extends AuthController
         $params = $this->request->param();
 
 
-        $where = [];
+        $where   = [];
         $where[] = ['user_id', '=', $this->user_id];
         if ($params['id']) $where[] = ['id', '=', $params['id']];
         if ($params['order_num']) $where[] = ['order_num', '=', $params['order_num']];
@@ -1072,7 +1072,7 @@ class ShopOrderController extends AuthController
         $ShopOrderModel = new \initmodel\ShopOrderModel();//订单管理
 
 
-        $where = [];
+        $where   = [];
         $where[] = ['user_id', '=', $this->user_id];
         if ($params['id']) $where[] = ['id', '=', $params['id']];
         if ($params['order_num']) $where[] = ['order_num', '=', $params['order_num']];
@@ -1163,7 +1163,7 @@ class ShopOrderController extends AuthController
         $params = $this->request->param();
 
 
-        $where = [];
+        $where   = [];
         $where[] = ['user_id', '=', $this->user_id];
         if ($params['id']) $where[] = ['id', '=', $params['id']];
         if ($params['order_num']) $where[] = ['order_num', '=', $params['order_num']];
@@ -1292,7 +1292,7 @@ class ShopOrderController extends AuthController
 
         $params = $this->request->param();
 
-        $where = [];
+        $where   = [];
         $where[] = ['user_id', '=', $this->user_id];
         if ($params['id']) $where[] = ['id', '=', $params['id']];
         if ($params['order_num']) $where[] = ['order_num', '=', $params['order_num']];
@@ -1401,7 +1401,7 @@ class ShopOrderController extends AuthController
         $params = $this->request->param();
 
 
-        $where = [];
+        $where   = [];
         $where[] = ['user_id', '=', $this->user_id];
         if ($params['id']) $where[] = ['id', '=', $params['id']];
         if ($params['order_num']) $where[] = ['order_num', '=', $params['order_num']];
