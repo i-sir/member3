@@ -1,0 +1,277 @@
+
+
+
+
+    <!--user_id-->    <div class="form-group">
+        <label class="col-sm-2 control-label">用户信息:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="user_id" class="form-control post-params item-left" value="{$user_id|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--work_id-->    <div class="form-group">
+        <label class="col-sm-2 control-label">work_id:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="work_id" class="form-control post-params item-left" value="{$work_id|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--类型:1初级岗位,2中级岗位,3高级岗位-->    <div class="form-group">
+        <label class="col-sm-2 control-label">类型:</label>
+        <div class="layui-input-block col-sm-6">
+                                <if condition="!empty($type)">
+    <select class="form-control post-params" lay-search lay-filter="type" name="type">
+        <foreach item="vo" key="key" name="type_list">
+            <option value="{$key}"
+            <if condition="$type eq $key ">selected</if>
+            >{$vo}</option>
+        </foreach>
+    </select>
+    <else/>
+    <select class="form-control post-params" lay-search lay-filter="type" name="type">
+        <foreach item="vo" key="key" name="type_list">
+            <option value="{$key}">{$vo}</option>
+        </foreach>
+    </select>
+</if>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--支付方式:1现金,2积分-->    <div class="form-group">
+        <label class="col-sm-2 control-label">支付方式:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="p_type" class="form-control post-params item-left" value="{$p_type|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--名称-->    <div class="form-group">
+        <label class="col-sm-2 control-label">名称:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="name" class="form-control post-params item-left" value="{$name|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--报名费-->    <div class="form-group">
+        <label class="col-sm-2 control-label">报名费:</label>
+        <div class="layui-input-block col-sm-6">
+                                <input type="number" class="form-control post-params item-left" name="price" value="{$price|default=''}">
+                        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--工资-->    <div class="form-group">
+        <label class="col-sm-2 control-label">工资:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="salary" class="form-control post-params item-left" value="{$salary|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--标签-->    <div class="form-group">
+        <label class="col-sm-2 control-label">标签:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="tag" class="form-control post-params item-left" value="{$tag|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--状态:1已报名,2已到岗,3已驳回,4已弃岗-->    <div class="form-group">
+        <label class="col-sm-2 control-label">状态:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="status" class="form-control post-params item-left" value="{$status|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--备注-->    <div class="form-group">
+        <label class="col-sm-2 control-label">备注:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="remark" class="form-control post-params item-left" value="{$remark|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--弃岗原因-->    <div class="form-group">
+        <label class="col-sm-2 control-label">弃岗原因:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="reason" class="form-control post-params item-left" value="{$reason|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--处理结果-->    <div class="form-group">
+        <label class="col-sm-2 control-label">处理结果:</label>
+        <div class="layui-input-block col-sm-6">
+                            <input type="text" name="process" class="form-control post-params item-left" value="{$process|default=''}">
+                    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--24小时后不退款-->    <div class="form-group">
+        <label class="col-sm-2 control-label">24小时后不退款:</label>
+        <div class="layui-input-block col-sm-6">
+                                                    <input class="form-control post-params item-left js-datetime" name="max_refund_time" required
+                           type="text"
+                           value="{:isset($max_refund_time) && $max_refund_time > 10000 ? date('Y-m-d H:i', $max_refund_time) : ''}">
+         </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--通过时间-->    <div class="form-group">
+        <label class="col-sm-2 control-label">通过时间:</label>
+        <div class="layui-input-block col-sm-6">
+                                                    <input class="form-control post-params item-left js-datetime" name="pass_time" required
+                           type="text"
+                           value="{:isset($pass_time) && $pass_time > 10000 ? date('Y-m-d H:i', $pass_time) : ''}">
+         </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!--到岗时间-->    <div class="form-group">
+        <label class="col-sm-2 control-label">到岗时间:</label>
+        <div class="layui-input-block col-sm-6">
+                                                    <input class="form-control post-params item-left js-datetime" name="onboard_time" required
+                           type="text"
+                           value="{:isset($onboard_time) && $onboard_time > 10000 ? date('Y-m-d H:i', $onboard_time) : ''}">
+         </div>
+    </div>
+
+
+
+
+
+
+
+
+

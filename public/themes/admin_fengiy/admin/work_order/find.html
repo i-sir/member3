@@ -1,0 +1,284 @@
+ <include file="public@header"/>
+<style>
+    textarea {
+        border: 0;
+        outline: none;
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    input {
+        border: 0;
+        outline: none;
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    .col-sm-6 {
+        margin-top: 7px;
+    }
+</style>
+
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('find',['id'=>$id,'pid'=>$pid,'params'=>$params])}">查看</a></li>
+    </ul>
+    <form method="post" class="form-horizontal js-ajax-form margin-top-20 layui-form" autocomplete="off"
+          action="{:url('edit_post',['id'=>$id,'page'=>$page,'pid'=>$pid,'params'=>$params])}">
+
+
+        
+
+
+
+            <!--user_id-->            <div class="form-group">
+                <label class="col-sm-2 control-label">用户信息:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <if condition='!empty($user_info)'>
+<div style="display: flex;align-items: center;">
+<a href="javascript:imagePreviewDialog('{:cmf_get_asset_url($user_info.avatar)}');">
+<img class='img-rounded' src='{:cmf_get_asset_url($user_info.avatar)}' style='height:40px;'>
+</a>
+<div style="margin-left: 6px;">
+<p ondblclick="copyContent('{$user_info.openid}')">{$user_info.nickname}({$user_info.id})</p>
+<p>{$user_info.phone}</p>
+</div>
+</div>
+<else/>
+已删除
+</if>
+                </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--work_id-->            <div class="form-group">
+                <label class="col-sm-2 control-label">work_id:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$work_id|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--类型:1初级岗位,2中级岗位,3高级岗位-->            <div class="form-group">
+                <label class="col-sm-2 control-label">类型:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$type_name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--支付方式:1现金,2积分-->            <div class="form-group">
+                <label class="col-sm-2 control-label">支付方式:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$p_type_name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--名称-->            <div class="form-group">
+                <label class="col-sm-2 control-label">名称:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--报名费-->            <div class="form-group">
+                <label class="col-sm-2 control-label">报名费:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <input type="number" class="form-control post-params item-left" name="price"
+                                   value="{$price|default=''}">
+                                        </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--工资-->            <div class="form-group">
+                <label class="col-sm-2 control-label">工资:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$salary|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--标签-->            <div class="form-group">
+                <label class="col-sm-2 control-label">标签:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$tag|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--状态:1已报名,2已到岗,3已驳回,4已弃岗-->            <div class="form-group">
+                <label class="col-sm-2 control-label">状态:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$status_name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--备注-->            <div class="form-group">
+                <label class="col-sm-2 control-label">备注:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$remark|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--弃岗原因-->            <div class="form-group">
+                <label class="col-sm-2 control-label">弃岗原因:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$reason|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--处理结果-->            <div class="form-group">
+                <label class="col-sm-2 control-label">处理结果:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$process|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--24小时后不退款-->            <div class="form-group">
+                <label class="col-sm-2 control-label">24小时后不退款:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {:isset($max_refund_time) && $max_refund_time > 10000 ? date('Y-m-d H:i:s', $max_refund_time) : ''}                </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--通过时间-->            <div class="form-group">
+                <label class="col-sm-2 control-label">通过时间:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {:isset($pass_time) && $pass_time > 10000 ? date('Y-m-d H:i:s', $pass_time) : ''}                </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--到岗时间-->            <div class="form-group">
+                <label class="col-sm-2 control-label">到岗时间:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {:isset($onboard_time) && $onboard_time > 10000 ? date('Y-m-d H:i:s', $onboard_time) : ''}                </div>
+            </div>
+
+
+
+
+
+
+        
+
+        <!-- 主键id -->
+        <input type="text" name="id" value="{$id}" class="form-control post-params item-left" style="display: none">
+
+
+    </form>
+
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>
+
+
+

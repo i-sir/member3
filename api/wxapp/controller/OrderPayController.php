@@ -37,7 +37,7 @@ class OrderPayController extends AuthController
      *    @OA\Parameter(
      *         name="order_type",
      *         in="query",
-     *         description="10商城,90充值余额,100报名项目,250开通会员",
+     *         description="10商城,90充值余额,100报名项目,250开通会员,260岗位报名",
      *         required=false,
      *         @OA\Schema(
      *             type="string",
@@ -79,6 +79,7 @@ class OrderPayController extends AuthController
         $ShopOrderModel      = new \initmodel\ShopOrderModel(); //订单管理   (ps:InitModel)
         $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
         $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
+        $WorkOrderModel      = new \initmodel\WorkOrderModel(); //报名岗位   (ps:InitModel)
 
 
         $map   = [];
@@ -118,6 +119,17 @@ class OrderPayController extends AuthController
 
             //判断积分是否充足
             if ($order_info['point'] && $order_info['point'] > $this->user_info['point']) $this->error('积分不足');
+        }
+
+
+        //岗位报名
+        if ($params['order_type'] == 260) {
+            //修改订单,支付类型
+            $WorkOrderModel->where($map)->strict(false)->update([
+                'pay_type'    => 1,
+                'update_time' => time(),
+            ]);
+            $order_info = $WorkOrderModel->where($map)->find();
         }
 
 
@@ -167,10 +179,10 @@ class OrderPayController extends AuthController
      *     ),
      *
      *
-     *    @OA\Parameter(
+     *       @OA\Parameter(
      *         name="order_type",
      *         in="query",
-     *         description="10商城,90充值余额",
+     *         description="10商城,90充值余额,100报名项目,250开通会员,260岗位报名",
      *         required=false,
      *         @OA\Schema(
      *             type="string",
@@ -213,6 +225,7 @@ class OrderPayController extends AuthController
         $NotifyController    = new NotifyController();
         $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
         $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
+        $WorkOrderModel      = new \initmodel\WorkOrderModel(); //报名岗位   (ps:InitModel)
 
 
         $map   = [];
@@ -252,6 +265,21 @@ class OrderPayController extends AuthController
             //判断积分是否充足
             if ($order_info['point'] && $order_info['point'] > $this->user_info['point']) $this->error('积分不足');
         }
+
+
+        //岗位报名,支付成功后扣除积分
+        if ($params['order_type'] == 260) {
+            //修改订单,支付类型
+            $WorkOrderModel->where($map)->strict(false)->update([
+                'pay_type'    => 3,
+                'update_time' => time(),
+            ]);
+            $order_info = $WorkOrderModel->where($map)->find();
+
+            //判断积分是否充足
+            if ($order_info['amount'] > $this->user_info['point']) $this->error('积分不足');
+        }
+
 
         if (empty($order_info)) $this->error('订单不存在');
         if ($order_info['amount'] < 0.01) $this->error('订单错误');
@@ -313,17 +341,15 @@ class OrderPayController extends AuthController
      *         )
      *     ),
      *
-     *
-     *    @OA\Parameter(
+     *   @OA\Parameter(
      *         name="order_type",
      *         in="query",
-     *         description="10商城,90充值余额",
+     *         description="10商城,90充值余额,100报名项目,250开通会员,260岗位报名",
      *         required=false,
      *         @OA\Schema(
      *             type="string",
      *         )
      *     ),
-     *
      *
      * 	   @OA\Parameter(
      *         name="order_num",
@@ -359,6 +385,7 @@ class OrderPayController extends AuthController
         $NotifyController    = new NotifyController();
         $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
         $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
+        $WorkOrderModel      = new \initmodel\WorkOrderModel(); //报名岗位   (ps:InitModel)
 
 
         $map   = [];
@@ -398,6 +425,20 @@ class OrderPayController extends AuthController
 
             //判断积分是否充足
             if ($order_info['point'] && $order_info['point'] > $this->user_info['point']) $this->error('积分不足');
+        }
+
+
+        //岗位报名,支付成功后扣除积分
+        if ($params['order_type'] == 260) {
+            //修改订单,支付类型
+            $WorkOrderModel->where($map)->strict(false)->update([
+                'pay_type'    => 6,
+                'update_time' => time(),
+            ]);
+            $order_info = $WorkOrderModel->where($map)->find();
+
+            //判断积分是否充足
+            if ($order_info['amount'] > $this->user_info['point']) $this->error('积分不足');
         }
 
 

@@ -317,6 +317,7 @@ class NotifyController extends AuthController
         $ShopOrderModel      = new \initmodel\ShopOrderModel(); //订单管理  (ps:InitModel)
         $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
         $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
+        $WorkOrderModel      = new \initmodel\WorkOrderModel(); //报名岗位   (ps:InitModel)
 
 
         /** 查询出支付信息,以及关联的订单号 */
@@ -391,6 +392,16 @@ class NotifyController extends AuthController
 
         }
 
+
+        //岗位报名 & 类型注意
+        if ($pay_info['order_type'] == 260) {
+            $order_info = $WorkOrderModel->where($map)->find();//查询订单信息
+            if ($order_info['status'] != 1) {
+                Log::write("订单状态异常[processOrder],订单号[{$order_num}]");
+                return false;//订单状态异常
+            }
+            $result = $WorkOrderModel->where($map)->strict(false)->update($update);//更新订单信息
+        }
 
         //Log::write('processOrder:order_info');
         //Log::write($order_info);

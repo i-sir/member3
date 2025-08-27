@@ -1,0 +1,109 @@
+<!--类型:1初级岗位,2中级岗位,3高级岗位-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">类型:</label>
+    <div class="layui-input-block col-sm-6">
+        <if condition="!empty($type)">
+            <select class="form-control post-params" lay-search lay-filter="type" name="type">
+                <foreach item="vo" key="key" name="type_list">
+                    <option value="{$key}"
+                    <if condition="$type eq $key ">selected</if>
+                    >{$vo}</option>
+                </foreach>
+            </select>
+            <else/>
+            <select class="form-control post-params" lay-search lay-filter="type" name="type">
+                <foreach item="vo" key="key" name="type_list">
+                    <option value="{$key}">{$vo}</option>
+                </foreach>
+            </select>
+        </if>
+    </div>
+</div>
+
+
+<!--支付方式:1现金,2积分-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">支付方式:</label>
+    <div class="layui-input-block col-sm-6">
+        <if condition="!empty($p_type)">
+            <select class="form-control post-params" lay-search lay-filter="p_type" name="p_type">
+                <foreach item="vo" key="key" name="p_type_list">
+                    <option value="{$key}"
+                    <if condition="$p_type eq $key ">selected</if>
+                    >{$vo}</option>
+                </foreach>
+            </select>
+            <else/>
+            <select class="form-control post-params" lay-search lay-filter="p_type" name="p_type">
+                <foreach item="vo" key="key" name="p_type_list">
+                    <option value="{$key}">{$vo}</option>
+                </foreach>
+            </select>
+        </if>
+    </div>
+</div>
+
+<!--名称-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">名称:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="text" name="name" class="form-control post-params item-left" value="{$name|default=''}">
+    </div>
+</div>
+
+
+<!--报名费-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">报名费:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="number" class="form-control post-params item-left" name="price" value="{$price|default=''}">
+    </div>
+</div>
+
+
+<!--工资-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">工资:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="text" name="salary" class="form-control post-params item-left" value="{$salary|default=''}">
+    </div>
+</div>
+
+
+<!--标签-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">标签:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="text" name="tag" class="form-control post-params item-left" value="{$tag|default=''}">
+        <p class="help-block text-danger">使用/隔开</p>
+    </div>
+</div>
+
+
+<!--介绍-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">介绍:</label>
+    <div class="layui-input-block col-sm-6">
+         <textarea rows="4" class="form-control post-params item-left" cols="60"
+                                          name="introduce">{$introduce|default=''}</textarea>
+    </div>
+</div>
+
+
+<!--规则-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">规则:</label>
+    <div class="layui-input-block col-sm-6">
+         <textarea rows="4" class="form-control post-params item-left" cols="60"
+                   name="rules">{$rules|default=''}</textarea>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
