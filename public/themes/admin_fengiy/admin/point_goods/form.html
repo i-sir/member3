@@ -1,0 +1,245 @@
+<!--商品类型:1抢购,2限购-->
+<div class="form-group" style="display: none">
+    <label class="col-sm-2 control-label">商品类型:</label>
+    <div class="layui-input-block col-sm-6">
+        <if condition="!empty($type)">
+            <select class="form-control post-params" lay-search lay-filter="type" name="type">
+                <foreach item="vo" key="key" name="type_list">
+                    <option value="{$key}"
+                    <if condition="$type eq $key ">selected</if>
+                    >{$vo}</option>
+                </foreach>
+            </select>
+            <else/>
+            <select class="form-control post-params" lay-search lay-filter="type" name="type">
+                <foreach item="vo" key="key" name="type_list">
+                    <option value="{$key}">{$vo}</option>
+                </foreach>
+            </select>
+        </if>
+    </div>
+</div>
+
+
+<!--分类-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">分类:</label>
+    <div class="layui-input-block col-sm-6">
+        <if condition="!empty($class_id)">
+            <select class="form-control post-params" lay-search lay-filter="class_id" name="class_id">
+                <foreach item="vo" key="key" name="class_list">
+                    <option value="{$vo.id}"
+                    <if condition="$class_id eq $vo.id ">selected</if>
+                    >{$vo.name}</option>
+                </foreach>
+            </select>
+            <else/>
+            <select class="form-control post-params" lay-search lay-filter="class_id" name="class_id">
+                <foreach item="vo" key="key" name="class_list">
+                    <option value="{$vo.id}">{$vo.name}</option>
+                </foreach>
+            </select>
+        </if>
+    </div>
+</div>
+
+
+<!--level-->
+<div class="form-group" style="display: none">
+    <label class="col-sm-2 control-label">level:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="text" name="level" class="form-control post-params item-left" value="{$level|default=''}">
+    </div>
+</div>
+
+
+<!--门店id-->
+<div class="form-group" style="display: none">
+    <label class="col-sm-2 control-label">门店id:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="text" name="shop_id" class="form-control post-params item-left" value="{$shop_id|default=''}">
+    </div>
+</div>
+
+
+<!--商品名称-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">商品名称:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="text" name="goods_name" class="form-control post-params item-left"
+               value="{$goods_name|default=''}">
+    </div>
+</div>
+
+
+
+
+<!--价格-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">所需积分:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="number" class="form-control post-params item-left" name="price" value="{$price|default=''}">
+    </div>
+</div>
+
+<!--价格-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">最低积分:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="number" class="form-control post-params item-left" name="min_price" value="{$min_price|default=''}">
+    </div>
+</div>
+
+<!--stock-->
+<div class="form-group" style="display:none;">
+    <label class="col-sm-2 control-label">库存:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="text" name="stock" class="form-control post-params item-left" value="{$stock|default='999999999'}">
+    </div>
+</div>
+
+
+
+
+<!--划线价-->
+<div class="form-group" style="display: none">
+    <label class="col-sm-2 control-label">划线价:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="number" class="form-control post-params item-left" name="line_price"
+               value="{$line_price|default=''}">
+    </div>
+</div>
+
+
+<!--限购数量-->
+<div class="form-group" style="display: none">
+    <label class="col-sm-2 control-label">限购数量:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="text" name="quota" class="form-control post-params item-left" value="{$quota|default=''}">
+    </div>
+</div>
+
+
+<!--封面-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">封面:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="hidden" class="form-control post-params item-left" name="image" id="photo-0000009"
+               value="{$image}">
+        <if condition='!empty($image)'>
+            <a href="javascript:imagePreviewDialog('{:cmf_get_asset_url($image)}');">
+                <img src='{:cmf_get_image_preview_url($image)}' id='photo-0000009-preview' style='width: 85px;'>
+            </a>
+            <else/>
+            <img src='/static/images/default.png' id='photo-0000009-preview' style='width: 85px;'>
+        </if>
+        <a href="javascript:uploadOneImage('图片上传','#photo-0000009','image');">上传</a>
+        <a onclick="$('#photo-0000009-preview').attr('src','__TMPL__/public/assets/images/default-thumbnail.png');$('#photo-0000009').val('');return false;">取消图片</a>
+    </div>
+</div>
+
+
+<!--图集-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">图集:</label>
+    <div class="layui-input-block col-sm-6">
+        <div class="help-block text-danger">长按图片可上下拖动,调整图片顺序</div>
+        <if condition="!empty($images)">
+            <ul id="imagesId000000010" class="pic-list list-unstyled form-inline">
+                <foreach name="$images" item="vo">
+                    <li id="savedImages-000000010-{$key}" style="margin-bottom: 5px;">
+                        <input id="photoImages-000000010-{$key}" class="form-control post-params item-left"
+                               type="hidden" name="images[{$key}]" value="{$vo}">
+                        <img id="photoImages-000000010-{$key}-preview" src="{:cmf_get_image_preview_url($vo)}"
+                             height="50" onclick="parent.imagePreviewDialog(this.src);">
+                        <a href="javascript:uploadOneImage('图片上传','#photoImages-000000010-{$key}');">替换</a>
+                        <a href="javascript:(function(){$('#savedImages-000000010-{$key}').remove();})();">移除</a>
+                    </li>
+                </foreach>
+            </ul>
+            <else/>
+            <ul id="imagesId000000010" class="pic-list list-unstyled form-inline">
+                <li id="savedImages-000000010" style="margin-bottom: 5px;">
+                </li>
+            </ul>
+        </if>
+        <a href="javascript:uploadMultiImage('图片上传','#imagesId000000010','itemImages-000000010');"
+           class="btn btn-sm btn-default">选择图片</a>
+        <script type="text/html" id="itemImages-000000010">
+            <li id="savedImages-000000010-{id}" style="margin-bottom: 5px;">
+                <input id="photoImages-000000010-{id}" class="form-control post-params item-left" type="hidden"
+                       name="images[{id}]" value="{filepath}">
+                <img id="photoImages-000000010-{id}-preview" src="{url}" height="50"
+                     onclick="imagePreviewDialog(this.src);">
+                <a href="javascript:uploadOneImage('图片上传','#photoImages-000000010-{id}');">替换</a>
+                <a href="javascript:(function(){$('#savedImages-000000010-{id}').remove();})();">移除</a>
+            </li>
+        </script>
+        <script>
+            // 多图上传支持排序
+            new Sortable(imagesId000000010, {
+                animation: 150,
+                ghostClass: 'blue-background-class'
+            });
+        </script>
+    </div>
+</div>
+
+
+<!--状态-->
+<div class="form-group" style="display: none">
+    <label class="col-sm-2 control-label">状态:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="text" name="status" class="form-control post-params item-left" value="{$status|default=''}">
+    </div>
+</div>
+
+
+<!--售出数量-->
+<div class="form-group" style="display: none">
+    <label class="col-sm-2 control-label">售出数量:</label>
+    <div class="layui-input-block col-sm-6">
+        <input type="text" name="sell_count" class="form-control post-params item-left"
+               value="{$sell_count|default=''}">
+    </div>
+</div>
+
+
+<!--详情-->
+<div class="form-group">
+    <label class="col-sm-2 control-label">详情:</label>
+    <div class="layui-input-block col-sm-6">
+        <script type="text/plain" id="content" name="content">
+            {:cmf_replace_content_file_url(htmlspecialchars_decode($content))}
+
+        </script>
+        <script type="text/javascript">
+            //编辑器路径定义
+            var editorURL = GV.WEB_ROOT;
+        </script>
+        <script type="text/javascript" src="/static/js/ueditor/ueditor.config.js?v=00001"></script>
+        <script type="text/javascript" src="/static/js/ueditor/ueditor.all.min.js"></script>
+        <!--编辑器支持秀米-->
+        <script type="text/javascript" src="/static/js/ueditor/xiumi/xiumi-ue-dialog-v5.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/js/ueditor/xiumi/xiumi-ue-v5.css"/>
+        <script type="text/javascript">
+            $(function () {
+                editorcontent = new baidu.editor.ui.Editor();
+                editorcontent.render('content');
+                try {
+                    editorcontent.sync();
+                } catch (err) {
+                }
+            });
+        </script>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,314 @@
+ <include file="public@header"/>
+<style>
+    textarea {
+        border: 0;
+        outline: none;
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    input {
+        border: 0;
+        outline: none;
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    .col-sm-6 {
+        margin-top: 7px;
+    }
+</style>
+
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('find',['id'=>$id,'pid'=>$pid,'params'=>$params])}">查看</a></li>
+    </ul>
+    <form method="post" class="form-horizontal js-ajax-form margin-top-20 layui-form" autocomplete="off"
+          action="{:url('edit_post',['id'=>$id,'page'=>$page,'pid'=>$pid,'params'=>$params])}">
+
+
+        
+
+
+
+            <!--店铺-->            <div class="form-group">
+                <label class="col-sm-2 control-label">店铺:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$shop_id|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--用户-->            <div class="form-group">
+                <label class="col-sm-2 control-label">用户信息:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <if condition='!empty($user_info)'>
+<div style="display: flex;align-items: center;">
+<a href="javascript:imagePreviewDialog('{:cmf_get_asset_url($user_info.avatar)}');">
+<img class='img-rounded' src='{:cmf_get_asset_url($user_info.avatar)}' style='height:40px;'>
+</a>
+<div style="margin-left: 6px;">
+<p ondblclick="copyContent('{$user_info.openid}')">{$user_info.nickname}({$user_info.id})</p>
+<p>{$user_info.phone}</p>
+</div>
+</div>
+<else/>
+已删除
+</if>
+                </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--商品-->            <div class="form-group">
+                <label class="col-sm-2 control-label">商品:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$goods_id|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--规格-->            <div class="form-group">
+                <label class="col-sm-2 control-label">规格:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$sku_id|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--商品名字-->            <div class="form-group">
+                <label class="col-sm-2 control-label">商品名字:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$goods_name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--规格名字-->            <div class="form-group">
+                <label class="col-sm-2 control-label">规格名字:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$sku_name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--购买数量-->            <div class="form-group">
+                <label class="col-sm-2 control-label">购买数量:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$count|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--是否是会员:0否,1是-->            <div class="form-group">
+                <label class="col-sm-2 control-label">是否是会员:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$is_vip_name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--价格/单价-->            <div class="form-group">
+                <label class="col-sm-2 control-label">价格/单价:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <input type="number" class="form-control post-params item-left" name="goods_price"
+                                   value="{$goods_price|default=''}">
+                                        </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--会员价/单价   同步到普通单价里面,方便展示-->            <div class="form-group">
+                <label class="col-sm-2 control-label">会员价/单价   同步到普通单价里面,方便展示:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <input type="number" class="form-control post-params item-left" name="vip_price"
+                                   value="{$vip_price|default=''}">
+                                        </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--会员价/合计   同步到普通合计里面,方便展示-->            <div class="form-group">
+                <label class="col-sm-2 control-label">会员价/合计   同步到普通合计里面,方便展示:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <input type="number" class="form-control post-params item-left" name="vip_amount"
+                                   value="{$vip_amount|default=''}">
+                                        </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--优惠金额-->            <div class="form-group">
+                <label class="col-sm-2 control-label">优惠金额:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <input type="number" class="form-control post-params item-left" name="coupon_amount"
+                                   value="{$coupon_amount|default=''}">
+                                        </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--合计-->            <div class="form-group">
+                <label class="col-sm-2 control-label">合计:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <input type="number" class="form-control post-params item-left" name="total_amount"
+                                   value="{$total_amount|default=''}">
+                                        </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--展示图-->            <div class="form-group">
+                <label class="col-sm-2 control-label">展示图:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <if condition='!empty($image)'>
+<a href="javascript:imagePreviewDialog('{:cmf_get_asset_url($image)}');">
+<img src='{:cmf_get_asset_url($image)}' style='height:40px;'>
+</a>
+<else/>
+暂无上传
+</if>
+                </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--退款状态:0未提交,1审核中,2已通过,3已驳回-->            <div class="form-group">
+                <label class="col-sm-2 control-label">状态:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$status_name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--订单单号-->            <div class="form-group">
+                <label class="col-sm-2 control-label">订单单号:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$order_num|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+        <!-- 主键id -->
+        <input type="text" name="id" value="{$id}" class="form-control post-params item-left" style="display: none">
+
+
+    </form>
+
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>
+
+
+
