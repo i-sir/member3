@@ -37,7 +37,7 @@ class OrderPayController extends AuthController
      *    @OA\Parameter(
      *         name="order_type",
      *         in="query",
-     *         description="10商城,90充值余额,250开通会员",
+     *         description="10商城,90充值余额,100报名项目,250开通会员",
      *         required=false,
      *         @OA\Schema(
      *             type="string",
@@ -78,6 +78,8 @@ class OrderPayController extends AuthController
         $OrderPayModel       = new \initmodel\OrderPayModel();
         $ShopOrderModel      = new \initmodel\ShopOrderModel(); //订单管理   (ps:InitModel)
         $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
+        $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
+
 
         $map   = [];
         $map[] = ['order_num', '=', $params['order_num']];
@@ -91,6 +93,17 @@ class OrderPayController extends AuthController
                 'update_time' => time(),
             ]);
             $order_info = $ShopOrderModel->where($map)->find();
+        }
+
+
+        //订单支付
+        if ($params['order_type'] == 100) {
+            //修改订单,支付类型
+            $ProjectOrderModel->where($map)->strict(false)->update([
+                'pay_type'    => 1,
+                'update_time' => time(),
+            ]);
+            $order_info = $ProjectOrderModel->where($map)->find();
         }
 
 
@@ -194,10 +207,13 @@ class OrderPayController extends AuthController
         $params = $this->request->param();
         $openid = $this->user_info['openid'];
 
-        $Pay              = new PayController();
-        $OrderPayModel    = new \initmodel\OrderPayModel();
-        $ShopOrderModel   = new \initmodel\ShopOrderModel(); //订单管理   (ps:InitModel)
-        $NotifyController = new NotifyController();
+        $Pay                 = new PayController();
+        $OrderPayModel       = new \initmodel\OrderPayModel();
+        $ShopOrderModel      = new \initmodel\ShopOrderModel(); //订单管理   (ps:InitModel)
+        $NotifyController    = new NotifyController();
+        $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
+        $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
+
 
         $map   = [];
         $map[] = ['order_num', '=', $params['order_num']];
@@ -213,6 +229,29 @@ class OrderPayController extends AuthController
             $order_info = $ShopOrderModel->where($map)->find();
         }
 
+        //订单支付
+        if ($params['order_type'] == 100) {
+            //修改订单,支付类型
+            $ProjectOrderModel->where($map)->strict(false)->update([
+                'pay_type'    => 3,
+                'update_time' => time(),
+            ]);
+            $order_info = $ProjectOrderModel->where($map)->find();
+        }
+
+
+        //开通会员,支付成功后扣除积分
+        if ($params['order_type'] == 250) {
+            //修改订单,支付类型
+            $MemberVipOrderModel->where($map)->strict(false)->update([
+                'pay_type'    => 3,
+                'update_time' => time(),
+            ]);
+            $order_info = $MemberVipOrderModel->where($map)->find();
+
+            //判断积分是否充足
+            if ($order_info['point'] && $order_info['point'] > $this->user_info['point']) $this->error('积分不足');
+        }
 
         if (empty($order_info)) $this->error('订单不存在');
         if ($order_info['amount'] < 0.01) $this->error('订单错误');
@@ -314,10 +353,13 @@ class OrderPayController extends AuthController
         $params = $this->request->param();
         $openid = $this->user_info['openid'];
 
-        $Pay              = new PayController();
-        $OrderPayModel    = new \initmodel\OrderPayModel();
-        $ShopOrderModel   = new \initmodel\ShopOrderModel(); //订单管理   (ps:InitModel)
-        $NotifyController = new NotifyController();
+        $Pay                 = new PayController();
+        $OrderPayModel       = new \initmodel\OrderPayModel();
+        $ShopOrderModel      = new \initmodel\ShopOrderModel(); //订单管理   (ps:InitModel)
+        $NotifyController    = new NotifyController();
+        $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
+        $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
+
 
         $map   = [];
         $map[] = ['order_num', '=', $params['order_num']];
@@ -331,6 +373,31 @@ class OrderPayController extends AuthController
                 'update_time' => time(),
             ]);
             $order_info = $ShopOrderModel->where($map)->find();
+        }
+
+
+        //订单支付
+        if ($params['order_type'] == 100) {
+            //修改订单,支付类型
+            $ProjectOrderModel->where($map)->strict(false)->update([
+                'pay_type'    => 6,
+                'update_time' => time(),
+            ]);
+            $order_info = $ProjectOrderModel->where($map)->find();
+        }
+
+
+        //开通会员,支付成功后扣除积分
+        if ($params['order_type'] == 250) {
+            //修改订单,支付类型
+            $MemberVipOrderModel->where($map)->strict(false)->update([
+                'pay_type'    => 6,
+                'update_time' => time(),
+            ]);
+            $order_info = $MemberVipOrderModel->where($map)->find();
+
+            //判断积分是否充足
+            if ($order_info['point'] && $order_info['point'] > $this->user_info['point']) $this->error('积分不足');
         }
 
 

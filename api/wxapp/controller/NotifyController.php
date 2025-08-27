@@ -9,6 +9,7 @@
 namespace api\wxapp\controller;
 
 use initmodel\AssetModel;
+use initmodel\MemberModel;
 use plugins\weipay\lib\PayController;
 use think\facade\Db;
 use think\facade\Log;
@@ -315,6 +316,7 @@ class NotifyController extends AuthController
         $OrderPayModel       = new \initmodel\OrderPayModel();//支付记录表
         $ShopOrderModel      = new \initmodel\ShopOrderModel(); //订单管理  (ps:InitModel)
         $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
+        $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
 
 
         /** 查询出支付信息,以及关联的订单号 */
@@ -346,15 +348,32 @@ class NotifyController extends AuthController
         }
 
 
+        //报名活动 & 类型注意
+        if ($pay_info['order_type'] == 100) {
+            $order_info = $ProjectOrderModel->where($map)->find();//查询订单信息
+            if ($order_info['status'] != 1) {
+                Log::write("订单状态异常[processOrder],订单号[{$order_num}]");
+                return false;//订单状态异常
+            }
+            $result = $ProjectOrderModel->where($map)->strict(false)->update($update);//更新订单信息
+        }
+
+
         //开通会员 & 类型注意
         if ($pay_info['order_type'] == 250) {
-            $order_info = $ShopOrderModel->where($map)->find();//查询订单信息
+            $order_info = $MemberVipOrderModel->where($map)->find();//查询订单信息
             if ($order_info['status'] != 1) {
                 Log::write("订单状态异常[processOrder],订单号[{$order_num}]");
                 return false;//订单状态异常
             }
             $result = $ShopOrderModel->where($map)->strict(false)->update($update);//更新订单信息
 
+            //更新会员到期时间
+            MemberModel::where('id', '=', $order_info['user_id'])->strict(false)->update([
+                'vip_id'       => $order_info['vip_id'],
+                'vip_end_time' => $order_info['vip_end_time'],
+                'update_time'  => time(),
+            ]);
 
             //扣除积分
             $remark = "操作人[开通会员使用积分抵扣];操作说明[开通会员使用积分抵扣];操作类型[开通会员使用积分抵扣];";//管理备注
