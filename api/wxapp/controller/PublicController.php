@@ -568,7 +568,7 @@ class PublicController extends AuthController
             $update['login_city']  = $this->get_ip_to_city();
             if (empty($findUserInfo['pid']) && $pid && $findUserInfo['id'] != $pid) $update['pid'] = $pid;
 
-            $MemberModel->where('openid', '=', $user_openid)->strict(false)->update($update);
+            $MemberModel->where('phone', '=', $user_phone)->strict(false)->update($update);
         }
 
         //查询会员信息

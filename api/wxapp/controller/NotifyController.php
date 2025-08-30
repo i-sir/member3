@@ -320,6 +320,7 @@ class NotifyController extends AuthController
         $WorkOrderModel      = new \initmodel\WorkOrderModel(); //报名岗位   (ps:InitModel)
         $ActivityOrderModel  = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
         $InitController      = new InitController();
+        $PointOrderModel       = new \initmodel\PointOrderModel(); //订单管理
 
         /** 查询出支付信息,以及关联的订单号 */
         $pay_info = $OrderPayModel->where('pay_num', $pay_num)->find();
@@ -341,12 +342,12 @@ class NotifyController extends AuthController
 
         //商城 & 类型注意
         if ($pay_info['order_type'] == 10) {
-            $order_info = $ShopOrderModel->where($map)->find();//查询订单信息
+            $order_info = $PointOrderModel->where($map)->find();//查询订单信息
             if ($order_info['status'] != 1) {
                 Log::write("订单状态异常[processOrder],订单号[{$order_num}]");
                 return false;//订单状态异常
             }
-            $result = $ShopOrderModel->where($map)->strict(false)->update($update);//更新订单信息
+            $result = $PointOrderModel->where($map)->strict(false)->update($update);//更新订单信息
         }
 
 

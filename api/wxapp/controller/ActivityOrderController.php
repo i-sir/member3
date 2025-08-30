@@ -360,7 +360,7 @@ class ActivityOrderController extends AuthController
         if ($activity_info['is_early'] == 1) {
             $activity_info['early_time'] = $activity_info['early_time'] ?? '00:00';
             $early_time                  = date("Y-m-d {$activity_info['early_time']}", $activity_info['begin_time'] - ($activity_info['early_day'] * 24 * 60 * 60));
-            if (time() < $early_time) $insert['early_point'] = $activity_info['early_point'];
+            if (time() < strtotime($early_time)) $insert['early_point'] = $activity_info['early_point'];
         }
 
 

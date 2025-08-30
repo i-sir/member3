@@ -467,4 +467,202 @@ class MemberController extends AuthController
     }
 
 
+    /**
+     * 日期列表
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @OA\Post(
+     *     tags={"会员中心模块"},
+     *     path="/wxapp/member/date_list",
+     *
+     *
+     *     @OA\Parameter(
+     *         name="openid",
+     *         in="query",
+     *         description="openid",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="type",
+     *         in="query",
+     *         description="类型:1赛事,2年度",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *
+     *     @OA\Response(response="200", description="An example resource"),
+     *     @OA\Response(response="default", description="An example resource")
+     * )
+     *
+     *   test_environment: http://member3.ikun:9090/api/wxapp/member/date_list
+     *   official_environment: https://xcxkf161.aubye.com/api/wxapp/member/date_list
+     *   api: /wxapp/member/date_list
+     *   remark_name: 日期列表
+     *
+     */
+    public function date_list()
+    {
+        $params = $this->request->param();
+
+        $params['type'] = $params['type'] ?? 1;
+
+
+        if ($params['type'] == 1) {
+            $result[] = [
+                'name'       => '赛季',
+                'begin_date' => cmf_config('season_begin_date'),
+                'end_date'   => cmf_config('season_end_date'),
+            ];
+        }
+        if ($params['type'] == 2) {
+            $result1[] = [
+                'name'       => '生涯累计总排名',
+                'begin_date' => '2000-01-01',
+                'end_date'   => '2099-01-01',
+            ];
+            $result2   = $this->getRecentAcademicYears();
+            $result    = array_merge($result1, $result2);
+        }
+
+        $this->success("请求成功！", $result);
+    }
+
+
+    /**
+     * 排名列表
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @OA\Post(
+     *     tags={"会员中心模块"},
+     *     path="/wxapp/member/statistics",
+     *
+     *
+     *     @OA\Parameter(
+     *         name="openid",
+     *         in="query",
+     *         description="openid",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="begin_time",
+     *         in="query",
+     *         description="开始时间",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *     @OA\Parameter(
+     *         name="end_time",
+     *         in="query",
+     *         description="结束时间",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *
+     *     @OA\Response(response="200", description="An example resource"),
+     *     @OA\Response(response="default", description="An example resource")
+     * )
+     *
+     *   test_environment: http://member3.ikun:9090/api/wxapp/member/statistics
+     *   official_environment: https://xcxkf161.aubye.com/api/wxapp/member/statistics
+     *   api: /wxapp/member/statistics
+     *   remark_name: 排名列表
+     *
+     */
+    public function statistics()
+    {
+        $params = $this->request->param();
+
+
+        $AssetModel = new \initmodel\AssetModel();
+
+
+        $map   = [];
+        $map[] = $this->getBetweenTime($params['begin_time'], $params['end_time']);
+        $map[] = ['operate_type', '=', 'match_point'];
+        $map[] = ['identity_type', '=', 'member'];
+        $map[] = ['change_type', '=', 1];
+
+        // 统计每个用户
+        $result = $AssetModel
+            ->where($map)
+            ->field('user_id, SUM(price) as total_price') // 根据实际需求调整分组字段
+            ->group('user_id') // 根据实际需求调整分组字段
+            ->order('total_price', 'desc') // 按总价降序排列
+            ->select();
+
+
+        $this->success("请求成功！", $result);
+    }
+
+
+    /**
+     * 获取最近 N 个年度的日期范围
+     * @param int $n 年度数量
+     * @return array
+     */
+    function getRecentAcademicYears($n = 5)
+    {
+        $currentYear  = date('Y');
+        $currentMonth = date('m');
+
+        // 如果当前月份在9月之后，从今年开始
+        $startYear = ($currentMonth >= 9) ? $currentYear : $currentYear - 1;
+
+        $result = [];
+        for ($i = 0; $i < $n; $i++) {
+            $year  = $startYear - $i;
+            $range = $this->getAcademicYearDates($year);
+
+            $result[] = [
+                'name'       => $year . '-' . ($year + 1) . '年度排名',
+                'begin_date' => $range['begin_date'],
+                'end_date'   => $range['end_date'],
+                'year'       => $year
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * 获取指定年度的开始和结束日期
+     * @param int $year 年份
+     * @return array 包含开始和结束日期的数组
+     */
+    private function getAcademicYearDates($year)
+    {
+        // 假设年度格式为 2024-2025，开始日期为 2024-09-01，结束日期为 2025-08-31
+        $beginDate = date('Y-m-d', strtotime($year . '-01-01'));
+        $endDate   = date('Y-m-d', strtotime(($year + 1) . '-12-31'));
+
+        return [
+            'begin_date' => $beginDate,
+            'end_date'   => $endDate
+        ];
+    }
+
 }

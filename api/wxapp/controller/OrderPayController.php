@@ -81,6 +81,7 @@ class OrderPayController extends AuthController
         $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
         $WorkOrderModel      = new \initmodel\WorkOrderModel(); //报名岗位   (ps:InitModel)
         $ActivityOrderModel  = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
+        $PointOrderModel     = new \initmodel\PointOrderModel(); //订单管理
 
 
         $map   = [];
@@ -89,11 +90,22 @@ class OrderPayController extends AuthController
 
         //订单支付
         if ($params['order_type'] == 10) {
-            $ActivityModel = new \initmodel\ActivityModel(); //赛事活动   (ps:InitModel)
+
+            //修改订单,支付类型
+            $PointOrderModel->where($map)->strict(false)->update([
+                'pay_type'    => 1,
+                'update_time' => time(),
+            ]);
 
             //订单详情
-            $order_info = $ShopOrderModel->where($map)->find();
-            if (empty($order_info)) $this->error("订单不存在");
+            $order_info = $PointOrderModel->where($map)->find();
+        }
+
+        //赛事活动
+        if ($params['order_type'] == 50) {
+            $ActivityModel = new \initmodel\ActivityModel(); //赛事活动   (ps:InitModel)
+
+            $order_info = $ActivityOrderModel->where($map)->find();
 
 
             $activity_info = $ActivityModel->where('id', '=', $order_info['activity_id'])->find();
@@ -108,20 +120,10 @@ class OrderPayController extends AuthController
 
 
             //修改订单,支付类型
-            $ShopOrderModel->where($map)->strict(false)->update([
-                'pay_type'    => 1,
-                'update_time' => time(),
-            ]);
-        }
-
-        //赛事活动
-        if ($params['order_type'] == 50) {
-            //修改订单,支付类型
             $ActivityOrderModel->where($map)->strict(false)->update([
                 'pay_type'    => 1,
                 'update_time' => time(),
             ]);
-            $order_info = $ActivityOrderModel->where($map)->find();
         }
 
 
@@ -434,6 +436,7 @@ class OrderPayController extends AuthController
         $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
         $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
         $WorkOrderModel      = new \initmodel\WorkOrderModel(); //报名岗位   (ps:InitModel)
+        $ActivityOrderModel  = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
 
 
         $map   = [];
@@ -450,6 +453,30 @@ class OrderPayController extends AuthController
             $order_info = $ShopOrderModel->where($map)->find();
         }
 
+        //赛事活动
+        if ($params['order_type'] == 50) {
+            $ActivityModel = new \initmodel\ActivityModel(); //赛事活动   (ps:InitModel)
+
+            $order_info = $ActivityOrderModel->where($map)->find();
+
+
+            $activity_info = $ActivityModel->where('id', '=', $order_info['activity_id'])->find();
+            if (empty($activity_info)) $this->error("赛事活动不存在");
+
+            //查看报名人数是否已满
+            $map          = [];
+            $map[]        = ['activity_id', '=', $order_info['activity_id']];
+            $map[]        = ['status', 'in', [2, 3, 8]];
+            $enroll_count = $ActivityOrderModel->where($map)->lock(true)->count();
+            if ($enroll_count >= $activity_info['number']) $this->error("报名人数已满");
+
+
+            //修改订单,支付类型
+            $ActivityOrderModel->where($map)->strict(false)->update([
+                'pay_type'    => 1,
+                'update_time' => time(),
+            ]);
+        }
 
         //订单支付
         if ($params['order_type'] == 100) {

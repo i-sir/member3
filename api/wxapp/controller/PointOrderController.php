@@ -254,7 +254,7 @@ class PointOrderController extends AuthController
      * 计算价格
      * @OA\Post(
      *     tags={"订单管理"},
-     *     path="/wxapp/shop_order/get_amount",
+     *     path="/wxapp/point_order/get_amount",
      *
      *
      *
@@ -341,9 +341,9 @@ class PointOrderController extends AuthController
      *     @OA\Response(response="default", description="An example resource")
      * )
      *
-     *   test_environment: http://shop_template.ikun:9090/api/wxapp/shop_order/get_amount
-     *   official_environment: http://shop_template.com/api/wxapp/shop_order/get_amount
-     *   api: /wxapp/shop_order/get_amount
+     *   test_environment: http://shop_template.ikun:9090/api/wxapp/point_order/get_amount
+     *   official_environment: http://shop_template.com/api/wxapp/point_order/get_amount
+     *   api: /wxapp/point_order/get_amount
      *   remark_name: 计算价格
      *
      */
@@ -430,7 +430,7 @@ class PointOrderController extends AuthController
         $order_insert['amount']              = round($amount, 2);//实际支付金额
         $order_insert['point']               = round($point, 2);//需要多少积分
         $order_insert['goods_amount']        = round($goods_amount, 2);//商品金额
-        $order_insert['min_amount']          = round($min_amount, 2);//最低积分值
+        $order_insert['min_point']           = round($min_amount, 2);//最低积分值
         $order_insert['total_amount']        = round($total_amount, 2);//订单总金额,实际支付金额+优惠金额+运费金额+会员折扣金额
         $order_insert['original_price']      = round($original_price, 2);//原价
         $order_insert['goods_list']          = $goods_list;//商品信息
@@ -448,7 +448,7 @@ class PointOrderController extends AuthController
      * 下单
      * @OA\Post(
      *     tags={"订单管理"},
-     *     path="/wxapp/shop_order/add_order",
+     *     path="/wxapp/point_order/add_order",
      *
      *
      *
@@ -580,9 +580,9 @@ class PointOrderController extends AuthController
      *     @OA\Response(response="default", description="An example resource")
      * )
      *
-     *   test_environment: http://shop_template.ikun:9090/api/wxapp/shop_order/add_order
-     *   official_environment: http://shop_template.com/api/wxapp/shop_order/add_order
-     *   api: /wxapp/shop_order/add_order
+     *   test_environment: http://shop_template.ikun:9090/api/wxapp/point_order/add_order
+     *   official_environment: http://shop_template.com/api/wxapp/point_order/add_order
+     *   api: /wxapp/point_order/add_order
      *   remark_name: 下单
      *
      */

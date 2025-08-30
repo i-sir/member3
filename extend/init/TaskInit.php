@@ -202,7 +202,7 @@ class TaskInit
         $MemberModel = new \initmodel\MemberModel();//用户管理
 
         //操作vip   vip_time vip到期时间
-        $MemberModel->where('vip_end_time', '<', time())->update(['is_vip' => 0]);
+        $MemberModel->where('vip_end_time', '<', time())->update(['vip_id' => 0]);
         echo("更新vip状态,执行成功\n" . cmf_random_string(80) . "\n" . date('Y-m-d H:i:s') . "\n");
     }
 
