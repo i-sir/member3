@@ -232,8 +232,6 @@ class WxBaseController extends AuthController
     }
 
 
-
-
     /**
      * 测试生成小程序(太阳)码
      * 调用示例  https://xcxkf161.aubye.com/api/wxapp/wx_base/get_mini_qr_test
@@ -546,7 +544,6 @@ class WxBaseController extends AuthController
 
         throw new HttpResponseException($response);
     }
-
 
 
     /**
