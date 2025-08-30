@@ -79,7 +79,8 @@
 </div>
 
 <!-- 早鸟积分设置区域 -->
-<div class="early-bird-settings" <if condition="$is_early != 1">style="display:none;"</if>>
+<div class="early-bird-settings"
+<if condition="$is_early != 1">style="display:none;"</if>>
 <div class="form-group">
     <label class="col-sm-2 control-label">早鸟积分:</label>
     <div class="layui-input-block col-sm-6">
@@ -89,12 +90,13 @@
 </div>
 
 <div class="form-group">
-    <label class="col-sm-2 control-label">活动当日前:</label>
+    <label class="col-sm-2 control-label">报名截止日期前:</label>
     <div class="layui-input-block col-sm-6 layui-inline">
         <div class="layui-input-inline" style="width: 100px;">
-            <input type="number" name="early_day" class="form-control post-params item-left" placeholder="n天"
+            <input type="number" name="early_day" class="form-control post-params item-left"
                    value="{$early_day|default=''}">
         </div>
+        天
         <div class="layui-input-inline" style="width: 100px;">
             <input type="time" name="early_time" class="form-control post-params item-left"
                    value="{$early_time|default=''}">
@@ -105,11 +107,11 @@
 
 <script>
     // 使用layui的方式监听开关事件
-    layui.use('form', function() {
+    layui.use('form', function () {
         var form = layui.form;
 
         // 监听开关切换事件
-        form.on('switch(earlySwitchFilter)', function(data) {
+        form.on('switch(earlySwitchFilter)', function (data) {
             var settingsArea = document.querySelector('.early-bird-settings');
             if (data.elem.checked) {
                 // 开启状态，显示设置项

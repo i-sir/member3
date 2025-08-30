@@ -121,7 +121,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['base_point'],
+                'price'         => $order_info['base_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 310,
                 'content'       => '赛事固定积分',
@@ -137,7 +137,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['reward_point'],
+                'price'         => $order_info['reward_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 320,
                 'content'       => '赛事奖励积分',
@@ -153,7 +153,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['pid'],
-                'price'         => $order_num['invite_point'],
+                'price'         => $order_info['invite_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 330,
                 'content'       => '赛事推荐积分',
@@ -169,7 +169,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['early_point'],
+                'price'         => $order_info['early_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 340,
                 'content'       => '赛事早鸟积分',
@@ -205,7 +205,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['base_point'],
+                'price'         => $order_info['base_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 350,
                 'content'       => '扣除赛事固定积分',
@@ -221,7 +221,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['reward_point'],
+                'price'         => $order_info['reward_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 360,
                 'content'       => '扣除赛事奖励积分',
@@ -237,7 +237,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['pid'],
-                'price'         => $order_num['invite_point'],
+                'price'         => $order_info['invite_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 370,
                 'content'       => '扣除赛事推荐积分',
@@ -253,7 +253,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['early_point'],
+                'price'         => $order_info['early_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 350,
                 'content'       => '扣除赛事早鸟积分',
@@ -289,7 +289,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['base_point'],
+                'price'         => $order_info['base_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 351,
                 'content'       => '扣除赛事固定积分',
@@ -303,7 +303,7 @@ class InitController
                 'operate_type'  => 'point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['base_point'],
+                'price'         => $order_info['base_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 280,
                 'content'       => '赛事固定积分',
@@ -316,7 +316,7 @@ class InitController
                 'operate_type'  => 'match_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['base_point'],
+                'price'         => $order_info['base_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 400,
                 'content'       => '赛事固定积分',
@@ -332,7 +332,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['reward_point'],
+                'price'         => $order_info['reward_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 361,
                 'content'       => '扣除赛事奖励积分',
@@ -345,7 +345,7 @@ class InitController
                 'operate_type'  => 'point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['base_point'],
+                'price'         => $order_info['reward_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 281,
                 'content'       => '赛事奖励积分',
@@ -361,7 +361,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['pid'],
-                'price'         => $order_num['invite_point'],
+                'price'         => $order_info['invite_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 371,
                 'content'       => '扣除赛事推荐积分',
@@ -375,7 +375,7 @@ class InitController
                 'operate_type'  => 'point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['pid'],
-                'price'         => $order_num['base_point'],
+                'price'         => $order_info['invite_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 282,
                 'content'       => '赛事推荐积分',
@@ -391,7 +391,7 @@ class InitController
                 'operate_type'  => 'freeze_point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['early_point'],
+                'price'         => $order_info['early_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 351,
                 'content'       => '扣除赛事早鸟积分',
@@ -405,7 +405,7 @@ class InitController
                 'operate_type'  => 'point',//操作类型，balance|point ...
                 'identity_type' => 'member',//身份类型，member| ...
                 'user_id'       => $order_info['user_id'],
-                'price'         => $order_num['base_point'],
+                'price'         => $order_info['early_point'],
                 'order_num'     => $order_num,
                 'order_type'    => 283,
                 'content'       => '发放早鸟积分',

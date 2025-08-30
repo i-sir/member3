@@ -606,6 +606,8 @@ class MemberController extends AuthController
         $map[] = ['identity_type', '=', 'member'];
         $map[] = ['change_type', '=', 1];
 
+
+
         // 统计每个用户
         $result = $AssetModel->alias('a')
             ->join('member m', 'a.user_id = m.id')  // 联表查询用户信息

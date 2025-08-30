@@ -81,7 +81,7 @@ class ActivityInit extends Base
             $item['is_enroll'] = false;
             //查看报名人数是否已满
             $map                  = [];
-            $map[]                = ['activity_id', '=', $params['activity_id']];
+            $map[]                = ['activity_id', '=', $item['id']];
             $map[]                = ['status', 'in', [2, 3, 8]];
             $enroll_count         = $ActivityOrderModel->where($map)->count();
             $item['enroll_count'] = $enroll_count;

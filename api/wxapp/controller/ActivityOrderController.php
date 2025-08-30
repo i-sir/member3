@@ -334,6 +334,9 @@ class ActivityOrderController extends AuthController
         $enroll_count = $ActivityOrderModel->where($map)->lock(true)->count();
         if ($enroll_count >= $activity_info['number']) $this->error("报名人数已满");
 
+        //取消订单扣除报名费的(%)
+        $activity_cancel_order = cmf_config('activity_cancel_order');
+
 
         /** 提交 **/
         $order_num              = $this->get_num_only();
@@ -351,6 +354,7 @@ class ActivityOrderController extends AuthController
         $insert['begin_time']   = $activity_info['begin_time'];
         $insert['end_time']     = $activity_info['end_time'];
         $insert['time']         = $activity_info['time'];
+        $insert['part_refund']  = $activity_cancel_order;
         $insert['early_point']  = 0;
         $insert['enroll_time']  = time();
         $insert['create_time']  = time();
@@ -359,7 +363,7 @@ class ActivityOrderController extends AuthController
         //判断是否在早鸟积分
         if ($activity_info['is_early'] == 1) {
             $activity_info['early_time'] = $activity_info['early_time'] ?? '00:00';
-            $early_time                  = date("Y-m-d {$activity_info['early_time']}", $activity_info['begin_time'] - ($activity_info['early_day'] * 24 * 60 * 60));
+            $early_time                  = date("Y-m-d {$activity_info['early_time']}", $activity_info['end_time'] - ($activity_info['early_day'] * 24 * 60 * 60));
             if (time() < strtotime($early_time)) $insert['early_point'] = $activity_info['early_point'];
         }
 
@@ -462,6 +466,7 @@ class ActivityOrderController extends AuthController
             if ($refund_result['code'] == 0) $this->error($refund_result['msg']);
         } elseif ($order_info['part_refund_time'] > time()) {
             //全部退款
+            $refund_amount = $order_info['amount'];
             $refund_result = $WxBaseController->wx_refund($order_info['pay_num'], $order_info['amount']);//退款测试&输入单号直接退
             if ($refund_result['code'] == 0) $this->error($refund_result['msg']);
         }
@@ -472,9 +477,10 @@ class ActivityOrderController extends AuthController
 
         //更新订单状态
         $result = $ActivityOrderModel->where($where)->strict(false)->update([
-            'status'      => 10,
-            'cancel_time' => time(),
-            'update_time' => time(),
+            'status'        => 10,
+            'refund_amount' => $refund_amount,
+            'cancel_time'   => time(),
+            'update_time'   => time(),
         ]);
 
         if (empty($result)) $this->error("暂无数据");
