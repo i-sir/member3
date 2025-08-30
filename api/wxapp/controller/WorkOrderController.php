@@ -330,6 +330,7 @@ class WorkOrderController extends AuthController
         $insert['type']            = $work_info['type'];
         $insert['p_type']          = $work_info['p_type'];//支付方式:1现金,2积分
         $insert['name']            = $work_info['name'];
+        $insert['company_name']    = $work_info['company_name'];
         $insert['amount']          = $work_info['price'];
         $insert['salary']          = $work_info['salary'];
         $insert['tag']             = $work_info['tag'];
@@ -365,11 +366,10 @@ class WorkOrderController extends AuthController
             $NotifyController->pointPayNotify($pay_num);
 
             //修改订单,支付类型 ,积分支付
-            $WorkOrderModel->where('order_num','=',$order_num)->strict(false)->update([
+            $WorkOrderModel->where('order_num', '=', $order_num)->strict(false)->update([
                 'pay_type'    => 3,
                 'update_time' => time(),
             ]);
-
 
 
             $this->success('支付成功');
@@ -378,7 +378,6 @@ class WorkOrderController extends AuthController
 
         $this->success('下单成功,请支付!', ['order_num' => $order_num, 'order_type' => 260]);
     }
-
 
 
     /**
@@ -437,7 +436,7 @@ class WorkOrderController extends AuthController
     {
         $this->checkAuth();
         $WorkOrderModel   = new \initmodel\WorkOrderModel(); //报名岗位   (ps:InitModel)
-        $WxBaseController  = new WxBaseController();//微信基础类
+        $WxBaseController = new WxBaseController();//微信基础类
 
         /** 获取参数 **/
         $params            = $this->request->param();
@@ -460,14 +459,14 @@ class WorkOrderController extends AuthController
         if ($order_info['max_refund_time'] > time()) {
 
             //微信支付
-            if ($order_info['pay_type'] == 1){
+            if ($order_info['pay_type'] == 1) {
                 //全部退款
                 $refund_result = $WxBaseController->wx_refund($order_info['pay_num'], $order_info['amount']);//退款测试&输入单号直接退
                 if ($refund_result['code'] == 0) $this->error($refund_result['msg']);
             }
 
             //积分支付
-            if ($order_info['pay_type'] == 3){
+            if ($order_info['pay_type'] == 3) {
                 //全部退款
                 $remark = "操作人[岗位报名取消积分退回];操作说明[岗位报名取消积分退回];操作类型[岗位报名取消积分退回];";//管理备注
                 AssetModel::incAsset('下单得积分,给上级发放佣金 [270]', [

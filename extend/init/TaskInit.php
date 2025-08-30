@@ -47,6 +47,38 @@ class TaskInit
         echo("更新项目状态,执行成功\n" . cmf_random_string(80) . "\n" . date('Y-m-d H:i:s') . "\n");
     }
 
+    /**
+     * 更新活动状态
+     */
+    public function operation_activity()
+    {
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动   (ps:InitModel)
+
+
+        //进行中
+        $map   = [];
+        $map[] = ['begin_time', '<', time()];
+        $map[] = ['end_time', '>', time()];
+        $map[] = ['status', '=', 2];
+        $ActivityModel->where($map)->strict(false)->update([
+            'status'      => 1,
+            'update_time' => time(),
+        ]);
+
+
+        //已结束
+        $map100   = [];
+        $map100[] = ['end_time', '<', time()];
+        $map100[] = ['status', '=', 1];
+        $ActivityModel->where($map100)->strict(false)->update([
+            'status'      => 2,
+            'update_time' => time(),
+        ]);
+
+
+        echo("更新活动状态,执行成功\n" . cmf_random_string(80) . "\n" . date('Y-m-d H:i:s') . "\n");
+    }
+
 
     /**
      * 自动取消订单
@@ -131,6 +163,36 @@ class TaskInit
         echo("自动取消订单,执行成功\n" . cmf_random_string(80) . "\n" . date('Y-m-d H:i:s') . "\n");
     }
 
+    /**
+     * 自动完成赛事活动
+     */
+    public function operation_accomplish_activity_order()
+    {
+        $ActivityOrderModel = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
+
+        $InitController = new InitController();//基础接口
+
+
+        $map   = [];
+        $map[] = ['end_time', '<', time()];
+        $map[] = ['status', 'in', [2,3]];
+
+        $list = $ActivityOrderModel->where($map)->field('id,order_num')->select();
+        foreach ($list as $k => $order_info) {
+            //这里处理订单完成后的逻辑
+            $InitController->sendActivityOrderAccomplish($order_info['order_num']);
+        }
+
+        $ActivityOrderModel->where($map)->strict(false)->update([
+            'status'          => 8,
+            'accomplish_time' => time(),
+            'update_time'     => time(),
+        ]);
+
+
+        echo("自动完成赛事活动,执行成功\n" . cmf_random_string(80) . "\n" . date('Y-m-d H:i:s') . "\n");
+    }
+
 
     /**
      * 更新vip状态
@@ -140,7 +202,7 @@ class TaskInit
         $MemberModel = new \initmodel\MemberModel();//用户管理
 
         //操作vip   vip_time vip到期时间
-        //$MemberModel->where('vip_time', '<', time())->update(['is_vip' => 0]);
+        $MemberModel->where('vip_end_time', '<', time())->update(['is_vip' => 0]);
         echo("更新vip状态,执行成功\n" . cmf_random_string(80) . "\n" . date('Y-m-d H:i:s') . "\n");
     }
 

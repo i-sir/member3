@@ -71,7 +71,7 @@ class WorkInit extends Base
         /** 处理数据 **/
         if ($this->InterfaceType == 'api') {
             /** api处理文件 **/
-            if ($item['tag']) $item['tag'] = $this->getParams($item['tag']);
+            if ($item['tag']) $item['tag'] = $this->getParams($item['tag'], '/');
 
             /** 处理富文本 **/
 

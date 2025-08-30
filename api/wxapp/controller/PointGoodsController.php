@@ -115,16 +115,15 @@ class PointGoodsController extends AuthController
         $list                    = $PointGoodsClassInit->get_list($where, $params);
 
 
-        $index_data[] = [
-            [
-                'id'   => 0,
-                'name' => '全部'
-            ], [
-                'id'   => 1,
-                'name' => '我能兑换'
-            ]
+        $index_data1[] = [
+            'id'   => 0,
+            'name' => '全部'
         ];
-        $result       = array_merge($index_data, $list->toArray());
+        $index_data2[] = [
+            'id'   => 1,
+            'name' => '我能兑换'
+        ];
+        $result        = array_merge($index_data1, $index_data2, $list->toArray());
 
         $this->success("请求成功!", $result);
     }

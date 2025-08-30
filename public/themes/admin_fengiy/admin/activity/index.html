@@ -2,9 +2,9 @@
 <body xmlns="http://www.w3.org/1999/html">
 <div class="wrap js-check-wrap">
     <ul class="nav nav-tabs">
-        <li class="active"><a href="{:url('index',['pid'=>$pid,'params'=>$params])}">动态管理</a></li>
+        <li class="active"><a href="{:url('index',['pid'=>$pid,'params'=>$params])}">赛事活动</a></li>
 
-        <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/dynamic/add')">
+        <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/activity/add')">
             <li><a href="{:url('add',['pid'=>$pid,'params'=>$params])}">添加</a></li>
         </if>
 
@@ -40,7 +40,7 @@
         <br>
         <div class="table-actions">
 
-            <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/dynamic/list_order_post')">
+            <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/activity/list_order_post')">
                 <button class="layui-btn layui-btn-primary layui-border-green layui-btn-xs js-ajax-submit" type="submit"
                         data-action="{:url('list_order_post',['page'=>$page,'pid'=>$pid,'params'=>$params])}">
                     排序
@@ -54,14 +54,25 @@
         <table class="table table-hover table-bordered">
             <thead>
             <tr>
-                <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/dynamic/list_order_post')">
+                <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/activity/list_order_post')">
                     <th style="">排序</th>
                 </if>
                 <th style="">ID</th>
+                <th style="">类型</th>
                 <th style="">名称</th>
-                <th style="">定金</th>
                 <th style="">封面</th>
-                <th style="">首页推荐</th>
+                <th style="">报名费</th>
+                <th style="">基础积分</th>
+                <th style="">奖励积分</th>
+                <th style="">早鸟积分</th>
+                <th style="">推荐积分</th>
+                <th style="">开始报名时间</th>
+                <th style="">截止报名时间</th>
+                <th style="">活动时间</th>
+                <th style="">活动地点</th>
+                <th style="">状态</th>
+                <th style="">报名人数</th>
+                <th style="">报名名单</th>
                 <th style="">显示</th>
                 <th style="">创建时间</th>
 
@@ -71,7 +82,7 @@
             <tbody>
             <foreach name="list" item="vo">
                 <tr>
-                    <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/dynamic/list_order_post')">
+                    <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/activity/list_order_post')">
                         <td style="width: 90px;">
                             <input style="width: 100%;!important;" type="text"
                                    class="form-control input input-order valid post-params" name="list_order[{$vo.id}]"
@@ -79,8 +90,8 @@
                         </td>
                     </if>
                     <td>{$vo.id|default=''}</td>  <!--本我-->
+                    <td>{$vo.type_name|default=''}</td>  <!--类型:1线上活动,2线下活动-->
                     <td>{$vo.name|default=''}</td>  <!--名称-->
-                    <td>{$vo.price|default=''}</td>  <!--定金-->
                     <td>
                         <!--封面-->
                         <if condition='!empty($vo.image)'>
@@ -91,12 +102,27 @@
                             暂无上传
                         </if>
                     </td>
+                    <td>{$vo.price|default=''}</td>  <!--报名费-->
+                    <td>{$vo.base_point|default=''}</td>  <!--基础积分-->
+                    <td>{$vo.reward_point|default=''}</td>  <!--奖励积分-->
+                    <td>{$vo.early_point|default=''}</td>  <!--早鸟积分-->
+                    <td>{$vo.invite_point|default=''}</td>  <!--推荐积分-->
+
+                    <td>{:isset($vo.begin_time) && $vo.begin_time > 10000 ? date('Y-m-d H:i', $vo.begin_time) : ''}</td>
+                    <!--开始报名时间-->
+                    <td>{:isset($vo.end_time) && $vo.end_time > 10000 ? date('Y-m-d H:i', $vo.end_time) : ''}</td>
+                    <!--截止报名时间-->
+                    <td>{$vo.time|default=''}</td>  <!--活动时间-->
+
+                    <td>{$vo.address|default=''}</td>  <!--活动地点-->
+                    <td>{$vo.status_name|default=''}</td>  <!--状态:1报名中,2已结束-->
+                    <td>{$vo.number|default=''}</td>  <!--报名人数-->
                     <td>
-                        <!--显示-->
+                        <!--报名名单-->
                         <div class='layui-form'>
-                            <input type='checkbox' lay-skin='switch' lay-text='是|否' lay-filter='is_index' name='is_index'
-                                   value='{$vo.id}'
-                            <if condition='$vo.is_index == 1'>checked</if>
+                            <input type='checkbox' lay-skin='switch' lay-text='是|否' lay-filter='is_member'
+                                   name='is_member' value='{$vo.id}'
+                            <if condition='$vo.is_member == 1'>checked</if>
                             >
                         </div>
                     </td>
@@ -109,23 +135,22 @@
                             >
                         </div>
                     </td>
-
                     <td>{:isset($vo.create_time) && $vo.create_time > 10000 ? date('Y-m-d H:i:s', $vo.create_time) :
                         ''}
                     </td>  <!--创建时间-->
                     <td>
-                        <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/dynamic/edit')">
+                        <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/activity/edit')">
                             <a class="layui-btn layui-btn-primary layui-border-green layui-btn-xs"
                                href="{:url('edit',['id'=>$vo.id,'pid'=>$pid,'page'=>$page,'params'=>$params])}">编辑</a>
                         </if>
                         <div style="display: none;">
-                            <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/dynamic/edit')">
+                            <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/activity/edit')">
                                 <a class="layui-btn layui-btn-primary layui-border-green layui-btn-xs"
                                    href="javascript:parent.openIframeLayer('{:url('edit',['id'=>$vo.id,'pid'=>$pid,'page'=>$page,'params'=>$params])}','编辑',{ area: ['65%', '85%'],move:'.layui-layer-title'},true);"
                                 >编辑(弹框-更改后台方法,跳转页面)</a>
                             </if>
                         </div>
-                        <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/dynamic/delete')">
+                        <if condition="cmf_auth_check(cmf_get_current_admin_id(),'admin/activity/delete')">
                             <a class="layui-btn layui-btn-primary layui-border-red layui-btn-xs js-ajax-delete"
                                href="{:url('delete',['id'=>$vo.id,'pid'=>$pid,'page'=>$page,'params'=>$params])}">删除</a>
                         </if>
@@ -153,15 +178,15 @@
         var layer = layui.layer, form = layui.form;
 
 
-        //显示
-        form.on('switch(is_show)', function (data) {
-            batchPost(data.value, 'is_show', this.checked ? 1 : 2)
+        //报名名单
+        form.on('switch(is_member)', function (data) {
+            batchPost(data.value, 'is_member', this.checked ? 1 : 2)
         });
 
 
-        //显示
-        form.on('switch(is_index)', function (data) {
-            batchPost(data.value, 'is_index', this.checked ? 1 : 2)
+//显示
+        form.on('switch(is_show)', function (data) {
+            batchPost(data.value, 'is_show', this.checked ? 1 : 2)
         });
 
 

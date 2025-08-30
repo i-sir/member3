@@ -37,7 +37,7 @@ class OrderPayController extends AuthController
      *    @OA\Parameter(
      *         name="order_type",
      *         in="query",
-     *         description="10商城,90充值余额,100报名项目,250开通会员,260岗位报名",
+     *         description="10商城,50赛事活动,90充值余额,100报名项目,250开通会员,260岗位报名",
      *         required=false,
      *         @OA\Schema(
      *             type="string",
@@ -80,6 +80,7 @@ class OrderPayController extends AuthController
         $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
         $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
         $WorkOrderModel      = new \initmodel\WorkOrderModel(); //报名岗位   (ps:InitModel)
+        $ActivityOrderModel  = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
 
 
         $map   = [];
@@ -88,23 +89,70 @@ class OrderPayController extends AuthController
 
         //订单支付
         if ($params['order_type'] == 10) {
+            $ActivityModel = new \initmodel\ActivityModel(); //赛事活动   (ps:InitModel)
+
+            //订单详情
+            $order_info = $ShopOrderModel->where($map)->find();
+            if (empty($order_info)) $this->error("订单不存在");
+
+
+            $activity_info = $ActivityModel->where('id', '=', $order_info['activity_id'])->find();
+            if (empty($activity_info)) $this->error("赛事活动不存在");
+
+            //查看报名人数是否已满
+            $map          = [];
+            $map[]        = ['activity_id', '=', $order_info['activity_id']];
+            $map[]        = ['status', 'in', [2, 3, 8]];
+            $enroll_count = $ActivityOrderModel->where($map)->lock(true)->count();
+            if ($enroll_count >= $activity_info['number']) $this->error("报名人数已满");
+
+
             //修改订单,支付类型
             $ShopOrderModel->where($map)->strict(false)->update([
                 'pay_type'    => 1,
                 'update_time' => time(),
             ]);
-            $order_info = $ShopOrderModel->where($map)->find();
+        }
+
+        //赛事活动
+        if ($params['order_type'] == 50) {
+            //修改订单,支付类型
+            $ActivityOrderModel->where($map)->strict(false)->update([
+                'pay_type'    => 1,
+                'update_time' => time(),
+            ]);
+            $order_info = $ActivityOrderModel->where($map)->find();
         }
 
 
-        //订单支付
+        //报名项目
         if ($params['order_type'] == 100) {
+            $ProjectInit = new \init\ProjectInit();//项目预定   (ps:InitController)
+
+
+            //查看订单详情
+            $order_info = $ProjectOrderModel->where($map)->find();
+
+
+            //项目信息
+            $project_info = $ProjectInit->get_find($order_info['project_id']);
+            if (empty($project_info)) $this->error("项目不存在");
+
+
+            //查看人数是否已满
+            $map          = [];
+            $map[]        = ['project_id', '=', $order_info['project_id']];
+            $map[]        = ['status', '=', [2, 8]];
+            $enroll_count = $ProjectOrderModel->where($map)->lock(true)->count();
+            if ($enroll_count >= $project_info['number']) $this->error("报名人数已满");
+
+
             //修改订单,支付类型
             $ProjectOrderModel->where($map)->strict(false)->update([
                 'pay_type'    => 1,
                 'update_time' => time(),
             ]);
-            $order_info = $ProjectOrderModel->where($map)->find();
+
         }
 
 

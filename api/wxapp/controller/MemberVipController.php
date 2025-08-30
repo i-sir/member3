@@ -317,7 +317,8 @@ class MemberVipController extends AuthController
         if (empty($vip_info)) $this->error("会员不存在!");
 
 
-        $order_num = $this->get_num_only();
+        //获取订单号
+        $order_num = $this->get_num_only('order_num', 8, 1, null, 'member_vip_order');
 
 
         $open_vip_point = cmf_config('open_vip_point'); // 获取配置：开通会员时人民币换算积分比例(%)

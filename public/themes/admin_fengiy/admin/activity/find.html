@@ -1,0 +1,362 @@
+ <include file="public@header"/>
+<style>
+    textarea {
+        border: 0;
+        outline: none;
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    input {
+        border: 0;
+        outline: none;
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    .col-sm-6 {
+        margin-top: 7px;
+    }
+</style>
+
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('find',['id'=>$id,'pid'=>$pid,'params'=>$params])}">查看</a></li>
+    </ul>
+    <form method="post" class="form-horizontal js-ajax-form margin-top-20 layui-form" autocomplete="off"
+          action="{:url('edit_post',['id'=>$id,'page'=>$page,'pid'=>$pid,'params'=>$params])}">
+
+
+        
+
+
+
+            <!--pid-->            <div class="form-group">
+                <label class="col-sm-2 control-label">pid:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$pid|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--类型:1线上活动,2线下活动-->            <div class="form-group">
+                <label class="col-sm-2 control-label">类型:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$type_name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--名称-->            <div class="form-group">
+                <label class="col-sm-2 control-label">名称:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--报名费-->            <div class="form-group">
+                <label class="col-sm-2 control-label">报名费:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <input type="number" class="form-control post-params item-left" name="price"
+                                   value="{$price|default=''}">
+                                        </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--基础积分-->            <div class="form-group">
+                <label class="col-sm-2 control-label">基础积分:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$base_point|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--奖励积分-->            <div class="form-group">
+                <label class="col-sm-2 control-label">奖励积分:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$reward_point|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--早鸟积分-->            <div class="form-group">
+                <label class="col-sm-2 control-label">早鸟积分:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$early_point|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--推荐积分-->            <div class="form-group">
+                <label class="col-sm-2 control-label">推荐积分:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$invite_point|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--封面-->            <div class="form-group">
+                <label class="col-sm-2 control-label">封面:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <if condition='!empty($image)'>
+<a href="javascript:imagePreviewDialog('{:cmf_get_asset_url($image)}');">
+<img src='{:cmf_get_asset_url($image)}' style='height:40px;'>
+</a>
+<else/>
+暂无上传
+</if>
+                </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--图集-->            <div class="form-group">
+                <label class="col-sm-2 control-label">图集:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <if condition='!empty($images)'>
+<foreach name='$images' item='value'>
+<a href="javascript:imagePreviewDialog('{:cmf_get_image_preview_url($value)}');">
+<img src='{:cmf_get_image_preview_url($value)}' style='height:40px;'>
+</a>
+</foreach>
+</if>
+                </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--开始报名时间-->            <div class="form-group">
+                <label class="col-sm-2 control-label">开始报名时间:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {:isset($begin_time) && $begin_time > 10000 ? date('Y-m-d', $begin_time) : ''}                </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--截止报名时间-->            <div class="form-group">
+                <label class="col-sm-2 control-label">截止报名时间:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {:isset($end_time) && $end_time > 10000 ? date('Y-m-d', $end_time) : ''}                </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--活动时间-->            <div class="form-group">
+                <label class="col-sm-2 control-label">活动时间:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$time|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--报名人数-->            <div class="form-group">
+                <label class="col-sm-2 control-label">报名人数:</label>
+                <div class="layui-input-block col-sm-6">
+                                                <input type="number" class="form-control post-params item-left" name="number"
+                                   value="{$number|default=''}">
+                                        </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--报名名单:1显示,2隐藏-->            <div class="form-group">
+                <label class="col-sm-2 control-label">报名名单:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$is_member_name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--活动地点-->            <div class="form-group">
+                <label class="col-sm-2 control-label">活动地点:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$address|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--活动规则-->            <div class="form-group">
+                <label class="col-sm-2 control-label">活动规则:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$rules|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--状态:1报名中,2已结束-->            <div class="form-group">
+                <label class="col-sm-2 control-label">状态:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$status_name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--显示:1是,2否-->            <div class="form-group">
+                <label class="col-sm-2 control-label">显示:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$is_show_name|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+
+
+            <!--排序-->            <div class="form-group">
+                <label class="col-sm-2 control-label">排序:</label>
+                <div class="layui-input-block col-sm-6">
+                                                {$list_order|default=''}                                    </div>
+            </div>
+
+
+
+
+
+
+        
+
+        <!-- 主键id -->
+        <input type="text" name="id" value="{$id}" class="form-control post-params item-left" style="display: none">
+
+
+    </form>
+
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>
+
+
+

@@ -5,15 +5,15 @@ namespace init;
 
 /**
  * @Init(
- *     "name"            =>"Project",
- *     "name_underline"  =>"project",
- *     "table_name"      =>"project",
- *     "model_name"      =>"ProjectModel",
- *     "remark"          =>"项目预定",
+ *     "name"            =>"Activity",
+ *     "name_underline"  =>"activity",
+ *     "table_name"      =>"activity",
+ *     "model_name"      =>"ActivityModel",
+ *     "remark"          =>"赛事活动",
  *     "author"          =>"",
- *     "create_time"     =>"2025-08-26 17:09:37",
+ *     "create_time"     =>"2025-08-28 10:29:49",
  *     "version"         =>"1.0",
- *     "use"             => new \init\ProjectInit();
+ *     "use"             => new \init\ActivityInit();
  * )
  */
 
@@ -21,12 +21,13 @@ use think\facade\Db;
 use app\admin\controller\ExcelController;
 
 
-class ProjectInit extends Base
+class ActivityInit extends Base
 {
 
-    public $is_number = [1 => '是', 2 => '否'];//显示人数
-    public $is_show   = [1 => '是', 2 => '否'];//显示
+    public $type      = [1 => '线上活动', 2 => '线下活动'];//类型
+    public $is_member = [1 => '显示', 2 => '隐藏'];//报名名单
     public $status    = [1 => '报名中', 2 => '已结束'];//状态
+    public $is_show   = [1 => '是', 2 => '否'];//显示
 
 
     protected $Field         = "*";//过滤字段,默认全部
@@ -39,8 +40,8 @@ class ProjectInit extends Base
     //本init和model
     public function _init()
     {
-        $ProjectInit  = new \init\ProjectInit();//项目预定   (ps:InitController)
-        $ProjectModel = new \initmodel\ProjectModel(); //项目预定  (ps:InitModel)
+        $ActivityInit  = new \init\ActivityInit();//赛事活动   (ps:InitController)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动  (ps:InitModel)
     }
 
     /**
@@ -51,7 +52,6 @@ class ProjectInit extends Base
      */
     public function common_item($item = [], $params = [])
     {
-        $ProjectOrderModel = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
 
 
         //接口类型
@@ -64,9 +64,10 @@ class ProjectInit extends Base
 
 
         /** 处理文字描述 **/
-        $item['is_number_name'] = $this->is_number[$item['is_number']];//显示人数
-        $item['is_show_name']   = $this->is_show[$item['is_show']];//显示
+        $item['type_name']      = $this->type[$item['type']];//类型
+        $item['is_member_name'] = $this->is_member[$item['is_member']];//报名名单
         $item['status_name']    = $this->status[$item['status']];//状态
+        $item['is_show_name']   = $this->is_show[$item['is_show']];//显示
 
 
         /** 处理数据 **/
@@ -77,13 +78,6 @@ class ProjectInit extends Base
 
 
             /** 处理富文本 **/
-
-            //查看人数是否已满
-            $map                  = [];
-            $map[]                = ['project_id', '=', $item['id']];
-            $map[]                = ['status', '=', [2, 8]];
-            $enroll_count         = $ProjectOrderModel->where($map)->count();
-            $item['enroll_count'] = $enroll_count;
 
 
             if ($this->DataFormat == 'find') {
@@ -134,11 +128,11 @@ class ProjectInit extends Base
      */
     public function get_list($where = [], $params = [])
     {
-        $ProjectModel = new \initmodel\ProjectModel(); //项目预定  (ps:InitModel)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动  (ps:InitModel)
 
 
         /** 查询数据 **/
-        $result = $ProjectModel
+        $result = $ActivityModel
             ->where($where)
             ->order($params['order'] ?? $this->Order)
             ->field($params['field'] ?? $this->Field)
@@ -168,11 +162,11 @@ class ProjectInit extends Base
      */
     public function get_list_paginate($where = [], $params = [])
     {
-        $ProjectModel = new \initmodel\ProjectModel(); //项目预定  (ps:InitModel)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动  (ps:InitModel)
 
 
         /** 查询数据 **/
-        $result = $ProjectModel
+        $result = $ActivityModel
             ->where($where)
             ->order($params['order'] ?? $this->Order)
             ->field($params['field'] ?? $this->Field)
@@ -201,10 +195,10 @@ class ProjectInit extends Base
      */
     public function get_join_list($where = [], $params = [])
     {
-        $ProjectModel = new \initmodel\ProjectModel(); //项目预定  (ps:InitModel)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动  (ps:InitModel)
 
         /** 查询数据 **/
-        $result = $ProjectModel
+        $result = $ActivityModel
             ->alias('a')
             ->join('member b', 'a.user_id = b.id')
             ->where($where)
@@ -236,14 +230,14 @@ class ProjectInit extends Base
      */
     public function get_find($where = [], $params = [])
     {
-        $ProjectModel = new \initmodel\ProjectModel(); //项目预定  (ps:InitModel)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动  (ps:InitModel)
 
         /** 可直接传id,或者where条件 **/
         if (is_string($where) || is_int($where)) $where = ["id" => (int)$where];
         if (empty($where)) return false;
 
         /** 查询数据 **/
-        $item = $ProjectModel
+        $item = $ActivityModel
             ->where($where)
             ->order($params['order'] ?? $this->Order)
             ->field($params['field'] ?? $this->Field)
@@ -310,7 +304,7 @@ class ProjectInit extends Base
      */
     public function edit_post($params, $where = [])
     {
-        $ProjectModel = new \initmodel\ProjectModel(); //项目预定  (ps:InitModel)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动  (ps:InitModel)
 
 
         /** 查询详情数据 && 需要再打开 **/
@@ -327,24 +321,27 @@ class ProjectInit extends Base
         //处理时间格式
         if ($params['begin_time'] && is_string($params['begin_time'])) $params['begin_time'] = (strlen($params['begin_time']) <= 10) ? strtotime($params['begin_time'] . ' 00:00:00') : strtotime($params['begin_time']);//开始报名时间
         if ($params['end_time'] && is_string($params['end_time'])) $params['end_time'] = (strlen($params['end_time']) <= 10) ? strtotime($params['end_time'] . ' 23:59:59') : strtotime($params['end_time']);//截止报名时间
-        if ($params['whole_refund_time'] && is_string($params['whole_refund_time'])) $params['whole_refund_time'] = strtotime($params['whole_refund_time']);//全部退款时间
-        if ($params['part_refund_time'] && is_string($params['part_refund_time'])) $params['part_refund_time'] = strtotime($params['part_refund_time']);//部分退款时间
 
+        if ($params['is_early']) {
+            $params['is_early'] = 1;
+        } else {
+            $params['is_early'] = 2;
+        }
 
         if (!empty($where)) {
             //传入where条件,根据条件更新数据
             $params["update_time"] = time();
-            $result                = $ProjectModel->where($where)->strict(false)->update($params);
+            $result                = $ActivityModel->where($where)->strict(false)->update($params);
             //if ($result) $result = $item["id"];
         } elseif (!empty($params["id"])) {
             //如传入id,根据id编辑数据
             $params["update_time"] = time();
-            $result                = $ProjectModel->where("id", "=", $params["id"])->strict(false)->update($params);
+            $result                = $ActivityModel->where("id", "=", $params["id"])->strict(false)->update($params);
             //if($result) $result = $item["id"];
         } else {
             //无更新条件则添加数据
             $params["create_time"] = time();
-            $result                = $ProjectModel->strict(false)->insert($params, true);
+            $result                = $ActivityModel->strict(false)->insert($params, true);
         }
 
         return $result;
@@ -359,7 +356,7 @@ class ProjectInit extends Base
      */
     public function edit_post_two($params, $where = [])
     {
-        $ProjectModel = new \initmodel\ProjectModel(); //项目预定  (ps:InitModel)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动  (ps:InitModel)
 
 
         /** 可直接传id,或者where条件 **/
@@ -372,15 +369,15 @@ class ProjectInit extends Base
         if (!empty($where)) {
             //传入where条件,根据条件更新数据
             $params["update_time"] = time();
-            $result                = $ProjectModel->where($where)->strict(false)->update($params);
+            $result                = $ActivityModel->where($where)->strict(false)->update($params);
         } elseif (!empty($params["id"])) {
             //如传入id,根据id编辑数据
             $params["update_time"] = time();
-            $result                = $ProjectModel->where("id", "=", $params["id"])->strict(false)->update($params);
+            $result                = $ActivityModel->where("id", "=", $params["id"])->strict(false)->update($params);
         } else {
             //无更新条件则添加数据
             $params["create_time"] = time();
-            $result                = $ProjectModel->strict(false)->insert($params);
+            $result                = $ActivityModel->strict(false)->insert($params);
         }
 
         return $result;
@@ -396,11 +393,11 @@ class ProjectInit extends Base
      */
     public function delete_post($id, $type = 1, $params = [])
     {
-        $ProjectModel = new \initmodel\ProjectModel(); //项目预定  (ps:InitModel)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动  (ps:InitModel)
 
 
-        if ($type == 1) $result = $ProjectModel->destroy($id);//软删除 数据表字段必须有delete_time
-        if ($type == 2) $result = $ProjectModel->destroy($id, true);//真实删除
+        if ($type == 1) $result = $ActivityModel->destroy($id);//软删除 数据表字段必须有delete_time
+        if ($type == 2) $result = $ActivityModel->destroy($id, true);//真实删除
 
         return $result;
     }
@@ -414,14 +411,14 @@ class ProjectInit extends Base
      */
     public function batch_post($id, $params = [])
     {
-        $ProjectModel = new \initmodel\ProjectModel(); //项目预定  (ps:InitModel)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动  (ps:InitModel)
 
         $where   = [];
         $where[] = ["id", "in", $id];//$id 为数组
 
 
         $params["update_time"] = time();
-        $result                = $ProjectModel->where($where)->strict(false)->update($params);//修改状态
+        $result                = $ActivityModel->where($where)->strict(false)->update($params);//修改状态
 
         return $result;
     }
@@ -435,12 +432,12 @@ class ProjectInit extends Base
      */
     public function list_order_post($list_order, $params = [])
     {
-        $ProjectModel = new \initmodel\ProjectModel(); //项目预定   (ps:InitModel)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动   (ps:InitModel)
 
         foreach ($list_order as $k => $v) {
             $where   = [];
             $where[] = ["id", "=", $k];
-            $result  = $ProjectModel->where($where)->strict(false)->update(["list_order" => $v, "update_time" => time()]);//排序
+            $result  = $ActivityModel->where($where)->strict(false)->update(["list_order" => $v, "update_time" => time()]);//排序
         }
 
         return $result;
@@ -453,10 +450,10 @@ class ProjectInit extends Base
      */
     public function export_excel($where = [], $params = [])
     {
-        $ProjectInit  = new \init\ProjectInit();//项目预定   (ps:InitController)
-        $ProjectModel = new \initmodel\ProjectModel(); //项目预定  (ps:InitModel)
+        $ActivityInit  = new \init\ActivityInit();//赛事活动   (ps:InitController)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动  (ps:InitModel)
 
-        $result = $ProjectInit->get_list($where, $params);
+        $result = $ActivityInit->get_list($where, $params);
 
         $result = $result->toArray();
         foreach ($result as $k => &$item) {
@@ -494,7 +491,7 @@ class ProjectInit extends Base
         //        ];
 
         $Excel = new ExcelController();
-        $Excel->excelExports($result, $headArrValue, ["fileName" => "项目预定"]);
+        $Excel->excelExports($result, $headArrValue, ["fileName" => "赛事活动"]);
     }
 
 }

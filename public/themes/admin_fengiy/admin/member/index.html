@@ -37,12 +37,14 @@
             <thead>
             <tr>
 
-                <th style="width: 60px">ID</th>
-                <th style="width: 60px">用户信息</th>
-                <th style="width: 60px">手机号</th>
-                <th style="width: 60px">余额</th>
-                <th style="width: 60px">创建时间</th>
-                <th style="width: 160px">操作</th>
+                <th style="">ID</th>
+                <th style="">用户信息</th>
+                <th style="">手机号</th>
+                <th style="">余额</th>
+                <th style="">积分</th>
+                <th style="">冻结积分</th>
+                <th style="">创建时间</th>
+                <th style="">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -64,6 +66,8 @@
                     </td>
                     <td>{$vo.phone}</td>
                     <td>{$vo.balance}</td>
+                    <td>{$vo.point}</td>
+                    <td>{$vo.freeze_point}</td>
                     <!--                    <td>-->
                     <!--                        <if condition="!empty($vo.p_user_info)">-->
                     <!--                            <span ondblclick="copyContent('{$vo.p_user_info.openid}')">{$vo.p_user_info.nickname} ({$vo.p_user_info.id})</span>-->

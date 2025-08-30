@@ -195,4 +195,66 @@ class ProjectController extends AuthController
     }
 
 
+    /**
+     * 报名人员列表
+     * @OA\Post(
+     *     tags={"项目预定"},
+     *     path="/wxapp/project/find_user_list",
+     *
+     *
+     *
+     *    @OA\Parameter(
+     *         name="project_id",
+     *         in="query",
+     *         description="项目id",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *
+     *     @OA\Response(response="200", description="An example resource"),
+     *     @OA\Response(response="default", description="An example resource")
+     * )
+     *
+     *   test_environment: http://member3.ikun:9090/api/wxapp/project/find_user_list
+     *   official_environment: https://xcxkf161.aubye.com/api/wxapp/project/find_user_list
+     *   api:  /wxapp/project/find_user_list
+     *   remark_name: 报名人员列表
+     *
+     */
+    public function find_user_list()
+    {
+        $ProjectOrderModel = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
+
+
+        $params = $this->request->param();
+
+        $map   = [];
+        $map[] = ['a.project_id', '=', $params['project_id']];
+        $map[] = ['a.status', 'in', [2, 8]];
+
+        $result = $ProjectOrderModel->alias('a')
+            ->join("member m", "a.user_id=m.id")
+            ->field("m.nickname,m.avatar,m.username,m.phone")
+            ->where($map)
+            ->order("a.id desc")
+            ->select()
+            ->each(function ($item, $key) use (&$user_id) {
+                if ($item['avatar']) $item['avatar'] = cmf_get_asset_url($item['avatar']);
+
+
+                return $item;
+            });
+
+
+        if (empty($result)) $this->error("暂无数据");
+
+
+        $this->success("请求成功", $result);
+
+    }
+
 }

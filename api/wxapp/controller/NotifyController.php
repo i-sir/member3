@@ -318,7 +318,8 @@ class NotifyController extends AuthController
         $MemberVipOrderModel = new \initmodel\MemberVipOrderModel(); //订单管理   (ps:InitModel)
         $ProjectOrderModel   = new \initmodel\ProjectOrderModel(); //项目报名   (ps:InitModel)
         $WorkOrderModel      = new \initmodel\WorkOrderModel(); //报名岗位   (ps:InitModel)
-
+        $ActivityOrderModel  = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
+        $InitController      = new InitController();
 
         /** 查询出支付信息,以及关联的订单号 */
         $pay_info = $OrderPayModel->where('pay_num', $pay_num)->find();
@@ -346,6 +347,32 @@ class NotifyController extends AuthController
                 return false;//订单状态异常
             }
             $result = $ShopOrderModel->where($map)->strict(false)->update($update);//更新订单信息
+        }
+
+
+        //赛事活动 & 类型注意
+        if ($pay_info['order_type'] == 50) {
+            $order_info = $ActivityOrderModel->where($map)->find();//查询订单信息
+            if ($order_info['status'] != 1) {
+                Log::write("订单状态异常[processOrder],订单号[{$order_num}]");
+                return false;//订单状态异常
+            }
+
+
+            //一个赛事只发放一次积分
+            $map100                = [];
+            $map100[]              = ['activity_id', '=', $order_info['activity_id']];
+            $map100[]              = ['user_id', '=', $order_info['user_id']];
+            $map100[]              = ['status', 'in', [2, 3, 8]];
+            $order_count           = $ActivityOrderModel->where($map100)->count() + 1;
+            $update['order_count'] = $order_count;
+
+
+            $result = $ActivityOrderModel->where($map)->strict(false)->update($update);//更新订单信息
+
+
+            //发放冻结积分奖励
+            $InitController->payActivity($order_num);
         }
 
 

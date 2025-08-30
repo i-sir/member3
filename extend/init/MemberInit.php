@@ -44,6 +44,7 @@ class MemberInit extends Base
     {
         $MemberModel = new \initmodel\MemberModel(); //会员管理  (ps:InitModel)
 
+
         //传入id直接查询
         if (is_string($where) || is_int($where)) $where = ["id" => (int)$where];
         if (empty($where)) return false;
@@ -53,6 +54,19 @@ class MemberInit extends Base
         //处理公共数据
         if ($item['avatar']) $item['avatar'] = cmf_get_asset_url($item['avatar']);
 
+
+        //是否认证
+        $auth_list = ['username', 'birth', 'region', 'address', 'email', 'school', 'occupation', 'associations', 'associations_occupation', 'urgent_username', 'urgent_phone', 'relationship'];
+        // 初始化认证状态为true
+        $item['is_auth'] = true;
+        // 检查认证列表中的每个字段
+        foreach ($auth_list as $field) {
+            // 如果字段不存在或为空，则认证失败
+            if (!isset($item[$field]) || empty($item[$field])) {
+                $item['is_auth'] = false;
+                break; // 发现一个空字段就跳出循环
+            }
+        }
 
         return $item;
     }

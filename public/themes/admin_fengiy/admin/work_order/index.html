@@ -192,7 +192,8 @@
                 <th style="">用户信息</th>
                 <th style="">类型</th>
                 <th style="">支付方式</th>
-                <th style="">名称</th>
+                <th style="">岗位名称</th>
+                <th style="">公司名称</th>
                 <th style="">报名费</th>
                 <th style="">工资</th>
                 <th style="">状态</th>
@@ -228,6 +229,7 @@
                     <td>{$vo.type_name|default=''}</td>  <!--类型:1初级岗位,2中级岗位,3高级岗位-->
                     <td>{$vo.p_type_name|default=''}</td>  <!--支付方式:1现金,2积分-->
                     <td>{$vo.name|default=''}</td>  <!--名称-->
+                    <td>{$vo.company_name|default=''}</td>  <!--名称-->
                     <td>{$vo.amount|default=''}</td>  <!--报名费-->
                     <td>{$vo.salary|default=''}</td>  <!--工资-->
                     <td>{$vo.status_name|default=''}</td>  <!--状态:1已报名,2已到岗,3已驳回,4已弃岗-->

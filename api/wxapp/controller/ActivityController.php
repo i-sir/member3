@@ -4,18 +4,18 @@ namespace api\wxapp\controller;
 
 /**
  * @ApiController(
- *     "name"                    =>"Dynamic",
- *     "name_underline"          =>"dynamic",
- *     "controller_name"         =>"Dynamic",
- *     "table_name"              =>"dynamic",
- *     "remark"                  =>"动态管理"
- *     "api_url"                 =>"/api/wxapp/dynamic/index",
+ *     "name"                    =>"Activity",
+ *     "name_underline"          =>"activity",
+ *     "controller_name"         =>"Activity",
+ *     "table_name"              =>"activity",
+ *     "remark"                  =>"赛事活动"
+ *     "api_url"                 =>"/api/wxapp/activity/index",
  *     "author"                  =>"",
- *     "create_time"             =>"2025-08-26 15:25:50",
+ *     "create_time"             =>"2025-08-28 10:29:49",
  *     "version"                 =>"1.0",
- *     "use"                     => new \api\wxapp\controller\DynamicController();
- *     "test_environment"        =>"http://member3.ikun:9090/api/wxapp/dynamic/index",
- *     "official_environment"    =>"https://xcxkf161.aubye.com/api/wxapp/dynamic/index",
+ *     "use"                     => new \api\wxapp\controller\ActivityController();
+ *     "test_environment"        =>"http://member3.ikun:9090/api/wxapp/activity/index",
+ *     "official_environment"    =>"https://xcxkf161.aubye.com/api/wxapp/activity/index",
  * )
  */
 
@@ -28,36 +28,36 @@ use think\facade\Cache;
 error_reporting(0);
 
 
-class DynamicController extends AuthController
+class ActivityController extends AuthController
 {
 
     //public function initialize(){
-    //	//动态管理
+    //	//赛事活动
     //	parent::initialize();
     //}
 
 
     /**
      * 默认接口
-     * /api/wxapp/dynamic/index
-     * https://xcxkf161.aubye.com/api/wxapp/dynamic/index
+     * /api/wxapp/activity/index
+     * https://xcxkf161.aubye.com/api/wxapp/activity/index
      */
     public function index()
     {
-        $DynamicInit  = new \init\DynamicInit();//动态管理   (ps:InitController)
-        $DynamicModel = new \initmodel\DynamicModel(); //动态管理   (ps:InitModel)
+        $ActivityInit  = new \init\ActivityInit();//赛事活动   (ps:InitController)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动   (ps:InitModel)
 
         $result = [];
 
-        $this->success('动态管理-接口请求成功', $result);
+        $this->success('赛事活动-接口请求成功', $result);
     }
 
 
     /**
-     * 动态管理 列表
+     * 赛事活动 列表
      * @OA\Post(
-     *     tags={"动态管理"},
-     *     path="/wxapp/dynamic/find_dynamic_list",
+     *     tags={"赛事活动"},
+     *     path="/wxapp/activity/find_activity_list",
      *
      *
      *
@@ -80,6 +80,30 @@ class DynamicController extends AuthController
      *
      *
      *
+     *
+     *    @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="状态:1报名中,2已结束",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *
+     *
+     *
+     *    @OA\Parameter(
+     *         name="type",
+     *         in="query",
+     *         description="类型:1线上活动,2线下活动",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
      *
      *
      *     @OA\Parameter(
@@ -111,16 +135,16 @@ class DynamicController extends AuthController
      * )
      *
      *
-     *   test_environment: http://member3.ikun:9090/api/wxapp/dynamic/find_dynamic_list
-     *   official_environment: https://xcxkf161.aubye.com/api/wxapp/dynamic/find_dynamic_list
-     *   api:  /wxapp/dynamic/find_dynamic_list
-     *   remark_name: 动态管理 列表
+     *   test_environment: http://member3.ikun:9090/api/wxapp/activity/find_activity_list
+     *   official_environment: https://xcxkf161.aubye.com/api/wxapp/activity/find_activity_list
+     *   api:  /wxapp/activity/find_activity_list
+     *   remark_name: 赛事活动 列表
      *
      */
-    public function find_dynamic_list()
+    public function find_activity_list()
     {
-        $DynamicInit  = new \init\DynamicInit();//动态管理   (ps:InitController)
-        $DynamicModel = new \initmodel\DynamicModel(); //动态管理   (ps:InitModel)
+        $ActivityInit  = new \init\ActivityInit();//赛事活动   (ps:InitController)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动   (ps:InitModel)
 
         /** 获取参数 **/
         $params            = $this->request->param();
@@ -130,17 +154,17 @@ class DynamicController extends AuthController
         $where   = [];
         $where[] = ['id', '>', 0];
         $where[] = ['is_show', '=', 1];
-        if ($params["keyword"]) $where[] = ["name|introduce", "like", "%{$params['keyword']}%"];
-        if ($params["is_index"]) $where[] = ["is_index", "=", 1];
+        if ($params["keyword"]) $where[] = ["name", "like", "%{$params['keyword']}%"];
         if ($params["status"]) $where[] = ["status", "=", $params["status"]];
+        if ($params['type']) $where[] = ['type', '=', $params['type']];
 
 
         /** 查询数据 **/
         $params["InterfaceType"] = "api";//接口类型
         $params["DataFormat"]    = "list";//数据格式,find详情,list列表
         $params["field"]         = "*";//过滤字段
-        if ($params['is_paginate']) $result = $DynamicInit->get_list($where, $params);
-        if (empty($params['is_paginate'])) $result = $DynamicInit->get_list_paginate($where, $params);
+        if ($params['is_paginate']) $result = $ActivityInit->get_list($where, $params);
+        if (empty($params['is_paginate'])) $result = $ActivityInit->get_list_paginate($where, $params);
         if (empty($result)) $this->error("暂无信息!");
 
         $this->success("请求成功!", $result);
@@ -148,10 +172,10 @@ class DynamicController extends AuthController
 
 
     /**
-     * 动态管理 详情
+     * 赛事活动 详情
      * @OA\Post(
-     *     tags={"动态管理"},
-     *     path="/wxapp/dynamic/find_dynamic",
+     *     tags={"赛事活动"},
+     *     path="/wxapp/activity/find_activity",
      *
      *
      *
@@ -171,16 +195,16 @@ class DynamicController extends AuthController
      *     @OA\Response(response="default", description="An example resource")
      * )
      *
-     *   test_environment: http://member3.ikun:9090/api/wxapp/dynamic/find_dynamic
-     *   official_environment: https://xcxkf161.aubye.com/api/wxapp/dynamic/find_dynamic
-     *   api:  /wxapp/dynamic/find_dynamic
-     *   remark_name: 动态管理 详情
+     *   test_environment: http://member3.ikun:9090/api/wxapp/activity/find_activity
+     *   official_environment: https://xcxkf161.aubye.com/api/wxapp/activity/find_activity
+     *   api:  /wxapp/activity/find_activity
+     *   remark_name: 赛事活动 详情
      *
      */
-    public function find_dynamic()
+    public function find_activity()
     {
-        $DynamicInit  = new \init\DynamicInit();//动态管理    (ps:InitController)
-        $DynamicModel = new \initmodel\DynamicModel(); //动态管理   (ps:InitModel)
+        $ActivityInit  = new \init\ActivityInit();//赛事活动    (ps:InitController)
+        $ActivityModel = new \initmodel\ActivityModel(); //赛事活动   (ps:InitModel)
 
         /** 获取参数 **/
         $params            = $this->request->param();
@@ -193,13 +217,11 @@ class DynamicController extends AuthController
         /** 查询数据 **/
         $params["InterfaceType"] = "api";//接口类型
         $params["DataFormat"]    = "find";//数据格式,find详情,list列表
-        $result                  = $DynamicInit->get_find($where, $params);
+        $result                  = $ActivityInit->get_find($where, $params);
         if (empty($result)) $this->error("暂无数据");
 
         $this->success("详情数据", $result);
     }
-
-
 
 
 }

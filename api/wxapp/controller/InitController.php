@@ -31,8 +31,8 @@ class InitController
     /**
      * 给上级发放佣金
      * @param $p_user_id 上级id
-     * @param $child_id 子级id
-     *                  https://xcxkf161.aubye.com/api/wxapp/init/send_invitation_commission?p_user_id=1
+     * @param $child_id  子级id
+     *                   https://xcxkf161.aubye.com/api/wxapp/init/send_invitation_commission?p_user_id=1
      */
     public function send_invitation_commission($p_user_id = 0, $child_id = 0)
     {
@@ -55,8 +55,6 @@ class InitController
 
         return true;
     }
-
-
 
 
     /**
@@ -100,5 +98,311 @@ class InitController
 
         return true;
     }
+
+
+    /**
+     * 赛事活动支付成功
+     * @param $order_num
+     */
+    public function payActivity($order_num)
+    {
+        $ActivityOrderModel = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
+
+        $map        = [];
+        $map[]      = ['order_num', '=', $order_num];
+        $order_info = $ActivityOrderModel->where($map)->find();
+        if (empty($order_info)) return false;
+        if ($order_info['order_count'] != 1) return false;
+
+
+        if ($order_num['base_point'] > 0) {
+            $remark = "操作人[支付成功,发放固定冻结积分];操作说明[支付成功,发放固定冻结积分];操作类型[支付成功,发放固定冻结积分];";//管理备注
+            AssetModel::incAsset('赛事支付成功,发放固定冻结积分[310]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['base_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 310,
+                'content'       => '赛事固定积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        if ($order_num['reward_point'] > 0) {
+            $remark = "操作人[支付成功,发放奖励冻结积分];操作说明[支付成功,发放奖励冻结积分];操作类型[支付成功,发放奖励冻结积分];";//管理备注
+            AssetModel::incAsset('赛事支付成功,发放固定冻结积分[320]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['reward_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 320,
+                'content'       => '赛事奖励积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        if ($order_num['invite_point'] > 0 && $order_info['pid']) {
+            $remark = "操作人[支付成功,发放推荐冻结积分];操作说明[支付成功,发放推荐冻结积分];操作类型[支付成功,发放推荐冻结积分];";//管理备注
+            AssetModel::incAsset('赛事支付成功,发放推荐冻结积分[330]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['pid'],
+                'price'         => $order_num['invite_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 330,
+                'content'       => '赛事推荐积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        if ($order_num['early_point'] > 0) {
+            $remark = "操作人[支付成功,发放早鸟冻结积分];操作说明[支付成功,发放早鸟冻结积分];操作类型[支付成功,发放早鸟冻结积分];";//管理备注
+            AssetModel::incAsset('赛事支付成功,发放早鸟冻结积分[340]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['early_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 340,
+                'content'       => '赛事早鸟积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        return true;
+
+    }
+
+
+    /**
+     * 赛事活动取消订单
+     * @param $order_num
+     */
+    public function cancelActivity($order_num)
+    {
+        $ActivityOrderModel = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
+
+        $map        = [];
+        $map[]      = ['order_num', '=', $order_num];
+        $order_info = $ActivityOrderModel->where($map)->find();
+        if (empty($order_info)) return false;
+
+
+        if ($order_num['base_point'] > 0) {
+            $remark = "操作人[取消订单,扣除固定冻结积分];操作说明[取消订单,扣除固定冻结积分];操作类型[取消订单,扣除固定冻结积分];";//管理备注
+            AssetModel::decAsset('取消订单,扣除固定冻结积分[350]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['base_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 350,
+                'content'       => '扣除赛事固定积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        if ($order_num['reward_point'] > 0) {
+            $remark = "操作人[取消订单,扣除奖励冻结积分];操作说明[取消订单,扣除奖励冻结积分];操作类型[取消订单,扣除奖励冻结积分];";//管理备注
+            AssetModel::decAsset('取消订单,扣除奖励冻结积分[360]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['reward_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 360,
+                'content'       => '扣除赛事奖励积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        if ($order_num['invite_point'] > 0 && $order_info['pid']) {
+            $remark = "操作人[取消订单,扣除推荐冻结积分];操作说明[取消订单,扣除推荐冻结积分];操作类型[取消订单,扣除推荐冻结积分];";//管理备注
+            AssetModel::decAsset('取消订单,扣除推荐冻结积分[370]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['pid'],
+                'price'         => $order_num['invite_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 370,
+                'content'       => '扣除赛事推荐积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        if ($order_num['early_point'] > 0) {
+            $remark = "操作人[取消订单,扣除早鸟冻结积分];操作说明[取消订单,扣除早鸟冻结积分];操作类型[取消订单,扣除早鸟冻结积分];";//管理备注
+            AssetModel::decAsset('取消订单,扣除早鸟冻结积分[350]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['early_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 350,
+                'content'       => '扣除赛事早鸟积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        return true;
+
+    }
+
+
+    /**
+     * 赛事活动,完成,发放积分
+     * @param $order_num
+     */
+    public function sendActivityOrderAccomplish($order_num)
+    {
+        $ActivityOrderModel = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
+
+        $map        = [];
+        $map[]      = ['order_num', '=', $order_num];
+        $order_info = $ActivityOrderModel->where($map)->find();
+        if (empty($order_info)) return false;
+
+
+        if ($order_num['base_point'] > 0) {
+            $remark = "操作人[完成订单,扣除固定冻结积分];操作说明[完成订单,扣除固定冻结积分];操作类型[完成订单,扣除固定冻结积分];";//管理备注
+            AssetModel::decAsset('完成订单,扣除固定冻结积分[351]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['base_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 351,
+                'content'       => '扣除赛事固定积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+
+
+            $remark = "操作人[完成订单,发放固定积分];操作说明[完成订单,发放固定积分];操作类型[完成订单,发放固定积分];";//管理备注
+            AssetModel::incAsset('完成订单,发放固定积分[280]', [
+                'operate_type'  => 'point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['base_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 280,
+                'content'       => '赛事固定积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        if ($order_num['reward_point'] > 0) {
+            $remark = "操作人[完成订单,扣除奖励冻结积分];操作说明[完成订单,扣除奖励冻结积分];操作类型[完成订单,扣除奖励冻结积分];";//管理备注
+            AssetModel::decAsset('完成订单,扣除奖励冻结积分[361]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['reward_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 361,
+                'content'       => '扣除赛事奖励积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+
+            $remark = "操作人[完成订单,发放奖励积分];操作说明[完成订单,发放奖励积分];操作类型[完成订单,发放奖励积分];";//管理备注
+            AssetModel::incAsset('完成订单,发放奖励积分[281]', [
+                'operate_type'  => 'point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['base_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 281,
+                'content'       => '赛事奖励积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        if ($order_num['invite_point'] > 0 && $order_info['pid']) {
+            $remark = "操作人[完成订单,扣除推荐冻结积分];操作说明[完成订单,扣除推荐冻结积分];操作类型[完成订单,扣除推荐冻结积分];";//管理备注
+            AssetModel::decAsset('取消订单,扣除推荐冻结积分[371]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['pid'],
+                'price'         => $order_num['invite_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 371,
+                'content'       => '扣除赛事推荐积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+
+
+            $remark = "操作人[完成订单,发放推荐积分];操作说明[完成订单,发放推荐积分];操作类型[完成订单,发放推荐积分];";//管理备注
+            AssetModel::incAsset('完成订单,发放推荐积分[282]', [
+                'operate_type'  => 'point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['pid'],
+                'price'         => $order_num['base_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 282,
+                'content'       => '赛事推荐积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        if ($order_num['early_point'] > 0) {
+            $remark = "操作人[完成订单,扣除早鸟冻结积分];操作说明[完成订单,扣除早鸟冻结积分];操作类型[完成订单,扣除早鸟冻结积分];";//管理备注
+            AssetModel::decAsset('完成订单,扣除早鸟冻结积分[351]', [
+                'operate_type'  => 'freeze_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['early_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 351,
+                'content'       => '扣除赛事早鸟积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+
+
+            $remark = "操作人[完成订单,发放早鸟积分];操作说明[完成订单,发放早鸟积分];操作类型[完成订单,发放早鸟积分];";//管理备注
+            AssetModel::incAsset('完成订单,发放推荐积分[283]', [
+                'operate_type'  => 'point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['base_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 283,
+                'content'       => '发放早鸟积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+        }
+
+
+        return true;
+
+    }
+
 
 }

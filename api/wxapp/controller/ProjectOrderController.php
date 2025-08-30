@@ -287,8 +287,17 @@ class ProjectOrderController extends AuthController
         $params            = $this->request->param();
         $params["user_id"] = $this->user_id;
 
+        //项目信息
         $project_info = $ProjectInit->get_find($params['project_id']);
         if (empty($project_info)) $this->error("项目不存在");
+
+
+        //查看人数是否已满
+        $map          = [];
+        $map[]        = ['project_id', '=', $params['project_id']];
+        $map[]        = ['status', '=', [2, 8]];
+        $enroll_count = $ProjectOrderModel->where($map)->lock(true)->count();
+        if ($enroll_count >= $project_info['number']) $this->error("报名人数已满");
 
 
         $order_num                   = $this->get_num_only();
