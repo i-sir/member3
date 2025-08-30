@@ -196,6 +196,7 @@ class InitController
         $map[]      = ['order_num', '=', $order_num];
         $order_info = $ActivityOrderModel->where($map)->find();
         if (empty($order_info)) return false;
+        if ($order_info['order_count'] != 1) return false;
 
 
         if ($order_num['base_point'] > 0) {
@@ -279,6 +280,7 @@ class InitController
         $map[]      = ['order_num', '=', $order_num];
         $order_info = $ActivityOrderModel->where($map)->find();
         if (empty($order_info)) return false;
+        if ($order_info['order_count'] != 1) return false;
 
 
         if ($order_num['base_point'] > 0) {
