@@ -310,6 +310,19 @@ class InitController
                 'remark'        => $remark,
                 'order_id'      => 0,
             ]);
+
+            $remark = "操作人[完成订单,增加固定积分];操作说明[完成订单,增加固定积分];操作类型[完成订单,增加固定积分];";//管理备注
+            AssetModel::incAsset('完成订单,增加固定积分[400]', [
+                'operate_type'  => 'match_point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_num['base_point'],
+                'order_num'     => $order_num,
+                'order_type'    => 400,
+                'content'       => '赛事固定积分',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
         }
 
 
