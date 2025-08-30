@@ -601,7 +601,7 @@ class MemberController extends AuthController
 
 
         $map   = [];
-        $map[] = $this->getBetweenTime($params['begin_time'], $params['end_time']);
+        $map[] = $this->getBetweenTime($params['begin_time'], $params['end_time'], 'a.create_time');
         $map[] = ['operate_type', '=', 'match_point'];
         $map[] = ['identity_type', '=', 'member'];
         $map[] = ['change_type', '=', 1];
@@ -610,15 +610,15 @@ class MemberController extends AuthController
         $result = $AssetModel->alias('a')
             ->join('member m', 'a.user_id = m.id')  // 联表查询用户信息
             ->where($map)
-            ->field('a.user_id, SUM(a.price) as total_price, m.nickname, m.avatar, m.username, m.phone') // 添加用户信息字段
+            ->field('a.user_id, SUM(a.price) as total_price, m.nickname, m.avatar, m.phone') // 添加用户信息字段
             ->group('a.user_id') // 根据用户ID分组
-            ->order('total_price', 'desc') // 按总价降序排列
+            ->order('total_price desc') // 按总价降序排列
             ->limit(100)
             ->select()
             ->each(function ($item, $key) {
-                if ($item['avatar']) {
-                    $item['avatar'] = cmf_get_asset_url($item['avatar']);
-                }
+                if ($item['avatar']) $item['avatar'] = cmf_get_asset_url($item['avatar']);
+                $item['number'] = $key + 1;
+
                 return $item;
             });
 

@@ -382,11 +382,13 @@ class ProjectOrderController extends AuthController
         //判断是否要退钱
         if ($order_info['whole_refund_time'] > time()) {
             //全部退款
+            $refund_amount = $order_info['amount'];
             $refund_result = $WxBaseController->wx_refund($order_info['pay_num'], $order_info['amount']);//退款测试&输入单号直接退
             if ($refund_result['code'] == 0) $this->error($refund_result['msg']);
         } elseif ($order_info['part_refund_time'] > time()) {
             //部分退款
-            $refund_fee    = $order_info['amount'] * ($order_info['part_refund'] / 100);
+            $refund_fee    = round($order_info['amount'] * ($order_info['part_refund'] / 100), 2);
+            $refund_amount = $refund_fee;
             $refund_result = $WxBaseController->wx_refund($order_info['pay_num'], $refund_fee, $order_info['amount']);//退款测试&输入单号直接退
             if ($refund_result['code'] == 0) $this->error($refund_result['msg']);
         }
@@ -394,8 +396,9 @@ class ProjectOrderController extends AuthController
 
         //更新订单状态
         $result = $ProjectOrderModel->where($where)->strict(false)->update([
-            'status'      => 10,
-            'cancel_time' => time(),
+            'status'        => 10,
+            'refund_amount' => $refund_amount,
+            'cancel_time'   => time(),
         ]);
         if (empty($result)) $this->error("暂无数据");
 

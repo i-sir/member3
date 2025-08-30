@@ -242,7 +242,7 @@ class ProjectController extends AuthController
             ->where($map)
             ->order("a.id desc")
             ->select()
-            ->each(function ($item, $key) use (&$user_id) {
+            ->each(function ($item, $key)   {
                 if ($item['avatar']) $item['avatar'] = cmf_get_asset_url($item['avatar']);
 
 

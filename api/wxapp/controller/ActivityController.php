@@ -224,4 +224,68 @@ class ActivityController extends AuthController
     }
 
 
+
+    /**
+     * 报名人员列表
+     * @OA\Post(
+     *     tags={"赛事活动"},
+     *     path="/wxapp/activity/find_user_list",
+     *
+     *
+     *
+     *    @OA\Parameter(
+     *         name="activity_id",
+     *         in="query",
+     *         description="活动id",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *
+     *     @OA\Response(response="200", description="An example resource"),
+     *     @OA\Response(response="default", description="An example resource")
+     * )
+     *
+     *   test_environment: http://member3.ikun:9090/api/wxapp/activity/find_user_list
+     *   official_environment: https://xcxkf161.aubye.com/api/wxapp/activity/find_user_list
+     *   api:  /wxapp/activity/find_user_list
+     *   remark_name: 报名人员列表
+     *
+     */
+    public function find_user_list()
+    {
+        $ActivityOrderModel = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
+
+
+        $params = $this->request->param();
+
+        $map   = [];
+        $map[] = ['a.activity_id', '=', $params['activity_id']];
+        $map[] = ['a.status', 'in', [2, 8]];
+
+        $result = $ActivityOrderModel->alias('a')
+            ->join("member m", "a.user_id=m.id")
+            ->field("m.nickname,m.avatar,m.username,m.phone,a.create_time")
+            ->where($map)
+            ->order("a.id desc")
+            ->select()
+            ->each(function ($item, $key) {
+                if ($item['avatar']) $item['avatar'] = cmf_get_asset_url($item['avatar']);
+
+
+                return $item;
+            });
+
+
+        if (empty($result)) $this->error("暂无数据");
+
+
+        $this->success("请求成功", $result);
+
+    }
+
+
 }

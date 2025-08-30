@@ -339,7 +339,7 @@ class ActivityOrderController extends AuthController
         $order_num              = $this->get_num_only();
         $insert['order_num']    = $order_num;
         $insert['user_id']      = $this->user_id;
-        $insert['pid']          = $params['pid'];
+        $insert['pid']          = $params['pid'] ?? 0;
         $insert['activity_id']  = $params['activity_id'];
         $insert['type']         = $activity_info['type'];
         $insert['name']         = $activity_info['name'];

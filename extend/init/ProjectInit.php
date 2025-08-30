@@ -79,11 +79,13 @@ class ProjectInit extends Base
             /** 处理富文本 **/
 
             //查看人数是否已满
+            $item['is_enroll']    = false;
             $map                  = [];
             $map[]                = ['project_id', '=', $item['id']];
             $map[]                = ['status', 'in', [2, 8]];
             $enroll_count         = $ProjectOrderModel->where($map)->count();
             $item['enroll_count'] = $enroll_count;
+            if ($enroll_count >= $item['number']) $item['is_enroll'] = true;
 
 
             if ($this->DataFormat == 'find') {

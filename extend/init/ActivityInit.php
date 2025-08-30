@@ -52,7 +52,7 @@ class ActivityInit extends Base
      */
     public function common_item($item = [], $params = [])
     {
-
+        $ActivityOrderModel = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
 
         //接口类型
         if ($params['InterfaceType']) $this->InterfaceType = $params['InterfaceType'];
@@ -78,6 +78,14 @@ class ActivityInit extends Base
 
 
             /** 处理富文本 **/
+            $item['is_enroll'] = false;
+            //查看报名人数是否已满
+            $map                  = [];
+            $map[]                = ['activity_id', '=', $params['activity_id']];
+            $map[]                = ['status', 'in', [2, 3, 8]];
+            $enroll_count         = $ActivityOrderModel->where($map)->count();
+            $item['enroll_count'] = $enroll_count;
+            if ($enroll_count >= $item['number']) $item['is_enroll'] = true;
 
 
             if ($this->DataFormat == 'find') {
