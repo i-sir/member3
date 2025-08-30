@@ -81,7 +81,7 @@ class ProjectInit extends Base
             //查看人数是否已满
             $map                  = [];
             $map[]                = ['project_id', '=', $item['id']];
-            $map[]                = ['status', '=', [2, 8]];
+            $map[]                = ['status', 'in', [2, 8]];
             $enroll_count         = $ProjectOrderModel->where($map)->count();
             $item['enroll_count'] = $enroll_count;
 

@@ -238,7 +238,7 @@ class ProjectController extends AuthController
 
         $result = $ProjectOrderModel->alias('a')
             ->join("member m", "a.user_id=m.id")
-            ->field("m.nickname,m.avatar,m.username,m.phone")
+            ->field("m.nickname,m.avatar,m.username,m.phone,a.create_time")
             ->where($map)
             ->order("a.id desc")
             ->select()

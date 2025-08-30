@@ -77,7 +77,7 @@ class PointOrderController extends AdminBaseController
         $PointOrderModel = new \initmodel\PointOrderModel(); //积分商城订单   (ps:InitModel)
 
         $where   = [];
-        $where[] = ['status', 'in', [2, 8]];
+        $where[] = ['status', 'in', [2, 4, 8]];
         if ($params['keyword']) $where[] = ['phone|username|order_num', 'like', "%{$params['keyword']}%"];
         if ($params['order_num']) $where[] = ['order_num', 'like', "%{$params['order_num']}%"];
         if ($params['goods_name']) $where[] = ['goods_name', 'like', "%{$params['goods_name']}%"];
@@ -101,7 +101,7 @@ class PointOrderController extends AdminBaseController
 
 
         //导出数据
-        if ($params["is_export"]) $PointOrderInit->export_excel(array_merge($where, $status_where), $params);
+        //if ($params["is_export"]) $PointOrderInit->export_excel(array_merge($where, $status_where), $params);
         $result = $PointOrderInit->get_list_paginate(array_merge($where, $status_where), $params);
 
 
@@ -186,6 +186,97 @@ class PointOrderController extends AdminBaseController
         }
 
         return $this->fetch();
+    }
+
+
+    //发货
+    public function send()
+    {
+        $PointOrderInit  = new \init\PointOrderInit();//订单管理    (ps:InitController)
+        $PointOrderModel = new \initmodel\PointOrderModel(); //订单管理   (ps:InitModel)
+
+        /** 获取参数 **/
+        $params = $this->request->param();
+
+        /** 查询条件 **/
+        $where = [];
+        if ($params['id']) $where[] = ["id", "=", $params["id"]];
+        if ($params['order_num']) $where[] = ["order_num", "=", $params["order_num"]];
+        if ($params['cav_code']) $where[] = ["cav_code", "=", $params["cav_code"]];
+
+
+        $result = $PointOrderInit->get_find($where);
+        if (empty($result)) $this->error("暂无数据");
+        $toArray = $result->toArray();
+        foreach ($toArray as $k => $v) {
+            $this->assign($k, $v);
+        }
+
+        //快递公司
+        $express = Db::name('base_express')->select();
+        $this->assign('express', $express);
+
+        return $this->fetch();
+    }
+
+
+    //发货提交
+    public function send_post()
+    {
+        $PointOrderInit  = new \init\PointOrderInit();//订单管理    (ps:InitController)
+        $PointOrderModel = new \initmodel\PointOrderModel(); //订单管理   (ps:InitModel)
+
+        //订单发货后自动完成时间 单位/天
+        $order_auto_completion_time = cmf_config('order_auto_completion_time');
+
+        $params     = $this->request->param();
+        $order_info = $PointOrderInit->get_find($params['id']);
+        if (empty($order_info)) $this->error('订单信息错误');
+
+        if (empty($params['exp_num'])) $this->error('快递单号不能为空');
+
+
+        //快递信息
+        $express_info = Db::name('base_express')->find($params['exp_id']);
+
+        //更改订单信息
+        $params['exp_name']             = $express_info['name'];//快递名称
+        $params['status']               = 4;
+        $params['send_time']            = time();
+        $params['auto_accomplish_time'] = time() + $order_auto_completion_time * 86400;//自动完成时间
+        $PointOrderInit->edit_post($params);
+
+
+        //        $map     = [];
+        //        $map[]   = ['order_num', '=', $order_info['order_num']];
+        //        $map[]   = ['status', '=', 2];
+        //        $pay_num = Db::name('base_order_pay')->where($map)->value('pay_num');
+        //
+        //        //微信支付&发货
+        //        if ($order_info['pay_type'] != 2) {
+        //            $phone   = $order_info['phone'];
+        //            $exp_num = $params['exp_num'];
+        //            //发货
+        //            $openid           = $order_info['openid'];
+        //            $WxBaseController = new WxBaseController();
+        //
+        //
+        //            if ($params['is_virtual'] == 2) {
+        //                //虚拟发货
+        //                $send_result = $WxBaseController->uploadShippingInfo($pay_num, $openid, '订单发货', 3);
+        //            } else {
+        //                //快递发货
+        //                $send_result = $WxBaseController->uploadShippingInfo($pay_num, $openid, '订单发货', 1, $express_info['abbr'], $exp_num, $phone);
+        //            }
+        //
+        //            if ($send_result) {
+        //                Log::write('uploadShippingInfo-');
+        //                Log::write($send_result);
+        //            }
+        //        }
+
+
+        $this->success('发货成功');
     }
 
 

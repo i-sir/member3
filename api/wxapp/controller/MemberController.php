@@ -607,12 +607,20 @@ class MemberController extends AuthController
         $map[] = ['change_type', '=', 1];
 
         // 统计每个用户
-        $result = $AssetModel
+        $result = $AssetModel->alias('a')
+            ->join('member m', 'a.user_id = m.id')  // 联表查询用户信息
             ->where($map)
-            ->field('user_id, SUM(price) as total_price') // 根据实际需求调整分组字段
-            ->group('user_id') // 根据实际需求调整分组字段
+            ->field('a.user_id, SUM(a.price) as total_price, m.nickname, m.avatar, m.username, m.phone') // 添加用户信息字段
+            ->group('a.user_id') // 根据用户ID分组
             ->order('total_price', 'desc') // 按总价降序排列
-            ->select();
+            ->limit(100)
+            ->select()
+            ->each(function ($item, $key) {
+                if ($item['avatar']) {
+                    $item['avatar'] = cmf_get_asset_url($item['avatar']);
+                }
+                return $item;
+            });
 
 
         $this->success("请求成功！", $result);

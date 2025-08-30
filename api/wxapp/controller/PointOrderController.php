@@ -21,6 +21,7 @@ namespace api\wxapp\controller;
 
 
 use init\QrInit;
+use initmodel\AssetModel;
 use think\facade\Db;
 use think\facade\Log;
 use think\facade\Cache;
@@ -145,18 +146,12 @@ class PointOrderController extends AuthController
         /** 查询条件 **/
         $where   = [];
         $where[] = ['id', '>', 0];
+        $where[] = ['status', 'in', [2, 4, 8]];
+        $where[] = ['user_id', '=', $this->user_id];
         if ($params["keyword"]) $where[] = ["order_num|cav_code", "like", "%{$params['keyword']}%"];
         if ($params["type"]) $where[] = ["type", "=", $params["type"]];
         if ($params["status"]) $where[] = ["status", "=", $params["status"]];
 
-        //是否为核销员
-        if ($params["is_admin"]) {
-            $where[] = ['status', 'in', [8]];
-            $where[] = ['admin_id', '=', $this->user_id];
-        } else {
-            $where[] = ['status', 'in', [2, 8]];
-            $where[] = ['user_id', '=', $this->user_id];
-        }
 
         /** 查询数据 **/
         $params["InterfaceType"] = "api";//接口类型
@@ -598,6 +593,9 @@ class PointOrderController extends AuthController
         $PointGoodsModel       = new \initmodel\PointGoodsModel(); //商品管理
         $PointOrderModel       = new \initmodel\PointOrderModel(); //订单管理
         $PointOrderDetailModel = new \initmodel\PointOrderDetailModel(); //订单详情
+        $NotifyController      = new NotifyController();
+        $OrderPayModel         = new \initmodel\OrderPayModel();
+
 
         //订单基础信息
         $order_num                   = $this->get_num_only();
@@ -742,6 +740,36 @@ class PointOrderController extends AuthController
         if (empty($detail_result)) $this->error('订单详情创建失败');
 
 
+        if ($order_insert['amount'] <= 0) {
+            //扣除积分
+            $remark = "操作人[兑换积分商城商品];操作说明[兑换积分商城商品];操作类型[兑换积分商城商品];";//管理备注
+            AssetModel::decAsset('兑换积分商城商品 [200]', [
+                'operate_type'  => 'point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $this->user_id,
+                'price'         => $order_insert['point'],
+                'order_num'     => $order_num,
+                'order_type'    => 200,
+                'content'       => '兑换商品',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+
+            //支付记录插入一条记录
+            $pay_num = $OrderPayModel->add($this->openid, $order_num, $order_insert['amount'], 200, 2);
+            //积分 支付回调
+            $NotifyController->pointPayNotify($pay_num);
+
+            //修改订单,支付类型 ,积分支付
+            $PointOrderModel->where('order_num', '=', $order_num)->strict(false)->update([
+                'pay_type'    => 3,
+                'update_time' => time(),
+            ]);
+
+
+            $this->success('支付成功');
+        }
+
         // 提交事务
         Db::commit();
 
@@ -826,5 +854,84 @@ class PointOrderController extends AuthController
         return $order_detail;
     }
 
+
+    /**
+     * 完成订单
+     * @OA\Post(
+     *     tags={"订单管理"},
+     *     path="/wxapp/point_order/accomplish_order",
+     *
+     *
+     *
+     *    @OA\Parameter(
+     *         name="id",
+     *         in="query",
+     *         description="三选一",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *
+     *    @OA\Parameter(
+     *         name="order_num",
+     *         in="query",
+     *         description="三选一",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *
+     *
+     *
+     *
+     *
+     *
+     *     @OA\Response(response="200", description="An example resource"),
+     *     @OA\Response(response="default", description="An example resource")
+     * )
+     *
+     *   test_environment: http://member3.ikun:9090/api/wxapp/point_order/accomplish_order
+     *   official_environment: https://xcxkf161.aubye.com/api/wxapp/point_order/accomplish_order
+     *   api:  /wxapp/point_order/accomplish_order
+     *   remark_name: 完成订单
+     *
+     */
+    public function accomplish_order()
+    {
+        $this->checkAuth();
+        $PointOrderInit  = new \init\PointOrderInit();//订单管理    (ps:InitController)
+        $PointOrderModel = new \initmodel\PointOrderModel(); //订单管理   (ps:InitModel)
+
+        /** 获取参数 **/
+        $params            = $this->request->param();
+        $params["user_id"] = $this->user_id;
+
+        /** 查询条件 **/
+        $where   = [];
+        $where[] = ["user_id", "=", $this->user_id];
+        if ($params['id']) $where[] = ["id", "=", $params["id"]];
+        if ($params['order_num']) $where[] = ["order_num", "=", $params["order_num"]];
+        if ($params['cav_code']) $where[] = ["cav_code", "=", $params["cav_code"]];
+
+        /** 查询数据 **/
+        $order_info = $PointOrderModel->where($where)->find();
+        if (empty($order_info)) $this->error("暂无数据");
+
+
+        //更新订单状态
+        $result = $PointOrderModel->where($where)->strict(false)->update([
+            'status'          => 8,
+            'accomplish_time' => time(),
+            'update_time'     => time(),
+        ]);
+        if (!$result) $this->error("操作失败");
+
+
+        $this->success("操作成功!");
+    }
 
 }

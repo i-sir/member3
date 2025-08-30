@@ -144,7 +144,7 @@ class OrderPayController extends AuthController
             //查看人数是否已满
             $map          = [];
             $map[]        = ['project_id', '=', $order_info['project_id']];
-            $map[]        = ['status', '=', [2, 8]];
+            $map[]        = ['status', 'in', [2, 8]];
             $enroll_count = $ProjectOrderModel->where($map)->lock(true)->count();
             if ($enroll_count >= $project_info['number']) $this->error("报名人数已满");
 

@@ -24,16 +24,16 @@ class PointOrderInit extends Base
 {
 
     //后台展示状态列表,统计数量
-    public $status_list = [2 => '待核销', 8 => '已完成'];
+    public $status_list = [2 => '待发货', 4 => '待收货', 8 => '已完成'];
     public $type        = [1 => '商品', 2 => '优惠券'];//商品类型
 
     //后台状态,名字,条件
-    public $admin_status       = [2 => '待核销', 8 => '已完成'];
+    public $admin_status       = [2 => '待发货', 4 => '待收货', 8 => '已完成'];
     public $admin_status_where = [1 => [1], 2 => [2], 4 => [4], 6 => [6], 8 => [8], 10 => [10], 12 => [12], 14 => [14], 15 => [15], 16 => [16]];
 
 
     //前端状态,名字,条件
-    public $api_status       = [2 => '待核销', 8 => '已完成'];
+    public $api_status       = [2 => '待发货', 4 => '待收货', 8 => '已完成'];
     public $api_status_where = [1 => [1], 2 => [2, 20], 4 => [4], 6 => [6], 8 => [8], 10 => [10], 12 => [12, 14, 15, 16]];
 
 
