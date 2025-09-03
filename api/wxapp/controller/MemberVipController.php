@@ -301,6 +301,7 @@ class MemberVipController extends AuthController
     public function add_order()
     {
         $this->checkAuth();
+
         // 启动事务
         Db::startTrans();
 

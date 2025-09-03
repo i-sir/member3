@@ -156,6 +156,7 @@ class ActivityOrderController extends AuthController
         $where   = [];
         $where[] = ['id', '>', 0];
         $where[] = ['user_id', '=', $this->user_id];
+        $where[] = ["status", "in", [2, 3, 8, 10]];
         if ($params["keyword"]) $where[] = ["name", "like", "%{$params['keyword']}%"];
         if ($params["status"]) $where[] = ["status", "=", $params["status"]];
         if ($params['type']) $where[] = ['type', '=', $params['type']];
