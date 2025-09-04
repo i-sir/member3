@@ -741,22 +741,9 @@ class PointOrderController extends AuthController
 
 
         if ($order_insert['amount'] <= 0) {
-            //扣除积分
-            $remark = "操作人[兑换积分商城商品];操作说明[兑换积分商城商品];操作类型[兑换积分商城商品];";//管理备注
-            AssetModel::decAsset('兑换积分商城商品 [200]', [
-                'operate_type'  => 'point',//操作类型，balance|point ...
-                'identity_type' => 'member',//身份类型，member| ...
-                'user_id'       => $this->user_id,
-                'price'         => $order_insert['point'],
-                'order_num'     => $order_num,
-                'order_type'    => 200,
-                'content'       => '兑换商品',
-                'remark'        => $remark,
-                'order_id'      => 0,
-            ]);
 
             //支付记录插入一条记录
-            $pay_num = $OrderPayModel->add($this->openid, $order_num, $order_insert['amount'], 200, 2);
+            $pay_num = $OrderPayModel->add($this->openid, $order_num, $order_insert['amount'], 10, 2);
             //积分 支付回调
             $NotifyController->pointPayNotify($pay_num);
 
@@ -765,6 +752,9 @@ class PointOrderController extends AuthController
                 'pay_type'    => 3,
                 'update_time' => time(),
             ]);
+
+            // 提交事务
+            Db::commit();
 
 
             $this->success('支付成功');

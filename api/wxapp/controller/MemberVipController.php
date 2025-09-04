@@ -381,19 +381,19 @@ class MemberVipController extends AuthController
 
         //不用支付
         if ($amount <= 0 && $params['is_point']) {
-            //扣除积分
-            $remark = "操作人[开通会员使用积分抵扣];操作说明[开通会员使用积分抵扣];操作类型[开通会员使用积分抵扣];";//管理备注
-            AssetModel::decAsset('下单得积分,给上级发放佣金 [250]', [
-                'operate_type'  => 'point',//操作类型，balance|point ...
-                'identity_type' => 'member',//身份类型，member| ...
-                'user_id'       => $this->user_id,
-                'price'         => $point,
-                'order_num'     => $order_num,
-                'order_type'    => 250,
-                'content'       => '开通会员抵扣',
-                'remark'        => $remark,
-                'order_id'      => 0,
-            ]);
+            //扣除积分 && 支付成功会扣除
+            //            $remark = "操作人[开通会员使用积分抵扣];操作说明[开通会员使用积分抵扣];操作类型[开通会员使用积分抵扣];";//管理备注
+            //            AssetModel::decAsset('下单得积分,给上级发放佣金 [250]', [
+            //                'operate_type'  => 'point',//操作类型，balance|point ...
+            //                'identity_type' => 'member',//身份类型，member| ...
+            //                'user_id'       => $this->user_id,
+            //                'price'         => $point,
+            //                'order_num'     => $order_num,
+            //                'order_type'    => 250,
+            //                'content'       => '开通会员抵扣',
+            //                'remark'        => $remark,
+            //                'order_id'      => 0,
+            //            ]);
 
             //支付记录插入一条记录
             $pay_num = $OrderPayModel->add($this->openid, $order_num, $amount, 250, 2);

@@ -320,7 +320,7 @@ class NotifyController extends AuthController
         $WorkOrderModel      = new \initmodel\WorkOrderModel(); //报名岗位   (ps:InitModel)
         $ActivityOrderModel  = new \initmodel\ActivityOrderModel(); //活动报名   (ps:InitModel)
         $InitController      = new InitController();
-        $PointOrderModel       = new \initmodel\PointOrderModel(); //订单管理
+        $PointOrderModel     = new \initmodel\PointOrderModel(); //订单管理
 
         /** 查询出支付信息,以及关联的订单号 */
         $pay_info = $OrderPayModel->where('pay_num', $pay_num)->find();
@@ -348,6 +348,21 @@ class NotifyController extends AuthController
                 return false;//订单状态异常
             }
             $result = $PointOrderModel->where($map)->strict(false)->update($update);//更新订单信息
+
+            //扣除积分
+            $remark = "操作人[兑换积分商城商品];操作说明[兑换积分商城商品];操作类型[兑换积分商城商品];";//管理备注
+            AssetModel::decAsset('兑换积分商城商品 [200]', [
+                'operate_type'  => 'point',//操作类型，balance|point ...
+                'identity_type' => 'member',//身份类型，member| ...
+                'user_id'       => $order_info['user_id'],
+                'price'         => $order_info['point'],
+                'order_num'     => $order_num,
+                'order_type'    => 200,
+                'content'       => '兑换商品',
+                'remark'        => $remark,
+                'order_id'      => 0,
+            ]);
+
         }
 
 
