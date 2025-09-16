@@ -24,7 +24,7 @@ use app\admin\controller\ExcelController;
 class WorkInit extends Base
 {
 
-    public $type    = [1 => '初级岗位', 2 => '中级岗位', 3 => '高级岗位'];//类型
+    public $type    = [1 => '就业实习', 2 => '国外升学', 3 => '国内升学'];//类型
     public $p_type  = [1 => '现金', 2 => '积分'];//支付方式
     public $is_show = [1 => '是', 2 => '否'];//显示
 

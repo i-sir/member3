@@ -64,7 +64,7 @@
                 <th style="">公司名称</th>
                 <th style="">报名费</th>
                 <th style="">工资</th>
-                <th style="">规则</th>
+                <th style="width: 200px;">规则</th>
                 <th style="">显示</th>
                 <th style="">创建时间</th>
 
@@ -87,8 +87,27 @@
                     <td>{$vo.name|default=''}</td>  <!--名称-->
                     <td>{$vo.company_name|default=''}</td>  <!--名称-->
                     <td>{$vo.price|default=''}</td>  <!--报名费-->
-                    <td>{$vo.salary|default=''}</td>  <!--工资-->
-                    <td>{$vo.rules|default=''}</td>  <!--规则-->
+                    <td>
+                        <!-- 1. HTML 结构：保留溢出隐藏样式 + tooltip 标记 -->
+                        <div data-toggle="tooltip"
+                             title="{$vo.salary}"
+                             style="width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                        >
+                            {$vo.salary}
+                        </div>
+                    </td>
+                    <!--                    <td>-->
+                    <!--                        <span onmouseover='show("{$vo.rules}","{$vo.id}")' id="date_{$vo.id}">{$vo.rules}</span>-->
+                    <!--                    </td>  &lt;!&ndash;规则&ndash;&gt;-->
+                    <td>
+                        <!-- 1. HTML 结构：保留溢出隐藏样式 + tooltip 标记 -->
+                        <div data-toggle="tooltip"
+                             title="{$vo.rules}"
+                             style="width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                        >
+                            {$vo.rules}
+                        </div>
+                    </td>
                     <td>
                         <!--显示-->
                         <div class='layui-form'>
@@ -187,5 +206,35 @@
         $(".w-form-search").attr('action', "/index.html");
         $(".w-form-search").submit();
     });
+
+
+    function show(text, id) {
+        /*   let hoverTimeout;
+           $('#hoverElement').mouseenter(function() {
+               hoverTimeout = setTimeout(function() {
+                   // 鼠标停留一秒后执行的代码
+                   alert('Mouse has hovered for 1 second!');
+               }, 1000);
+           });
+           $('#hoverElement').mouseleave(function() {
+               clearTimeout(hoverTimeout);
+           });*/
+
+        layer.tips(text, '#date_' + id);
+    }
+
+
+    // 确保页面加载完成后初始化 Tooltip
+    $(function () {
+        // 定位需要“永久显示”的 Tooltip 元素
+        $('.persistent-tooltip').tooltip({
+            delay: {
+                show: 0,    // 鼠标放上去后，0毫秒立即显示（可选，根据需求调整）
+                hide: 99999 // 鼠标离开后，99999毫秒（约27小时）才关闭，模拟“一直显示”
+            },
+            trigger: 'hover' // 触发方式：鼠标hover（默认值，可省略，但写清楚更直观）
+        });
+    });
+
 </script>
 
