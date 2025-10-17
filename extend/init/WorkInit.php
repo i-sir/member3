@@ -72,7 +72,9 @@ class WorkInit extends Base
         if ($this->InterfaceType == 'api') {
             /** api处理文件 **/
             if ($item['tag']) $item['tag'] = $this->getParams($item['tag'], '/');
-
+            if ($item['image']) $item['image'] = cmf_get_asset_url($item['image']);
+            if ($item["introduce"]) $item["introduce"] = htmlspecialchars_decode(cmf_replace_content_file_url($item["introduce"]));
+            if ($item["rules"]) $item["rules"] = htmlspecialchars_decode(cmf_replace_content_file_url($item["rules"]));
             /** 处理富文本 **/
 
 
